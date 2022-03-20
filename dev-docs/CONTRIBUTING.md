@@ -14,7 +14,7 @@ Once you are approved, you will be given access to the Tables 1Password account 
 
 ## Where to find the files you will use
 
-Once given access to 1Password, login to tables@hackforla.org. Go to that account’s Google Drive. The code for this project is in the scripts folder and clicking on the Tables Script file will open up the code in the Google App Scripts Editor.
+Once given access to 1Password, login to tables@hackforla.org. Go to that account’s Google Drive. The code for this project is in the "Scripts" folder and clicking on the "Tables Scripts" file will open up the code in the Google App Scripts Editor.
 
 To find the actual Google Tables project, simply google “google tables” and click on the first result (must be signed into tables@hackforla.org). You will then be prompted to “Try Tables Now” click that and then click on “HfLA Volunteers” to enter the correct Table.
 

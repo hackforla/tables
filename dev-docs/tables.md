@@ -10,7 +10,7 @@ There are currently three tables within the project workspace (Volunteers, CoPs,
 
 ### Volunteers Table
 
-The Volunteers Table is the main table for the project. It holds a list of all Hack for LA’s volunteers and new onboarded volunteers will be added to this table. Each row in the table represents a different volunteer. Each column in the table represents various data associated with a specific volunteer, and some of these columns are fields in the onboarding form new volunteers fill out during onboarding. There are two fields, cop_name and project_name, that have a relationship to two other tables (CoP and Projects). This allows these columns to have a specific selection of the rows from these other two tables.
+The Volunteers Table is the main table for the project. It holds a list of all Hack for LA’s volunteers and new onboarded volunteers will be added to this table. Each row in the table represents a different volunteer. Each column in the table represents various data associated with a specific volunteer, and some of these columns are fields in the onboarding form volunteers fill out during onboarding. There are two fields, cop_name and project_name, that have a relationship to two other tables (CoP and Projects). This allows these columns to have a specific selection of the rows from these other two tables.
 
 ### CoP Table
 
