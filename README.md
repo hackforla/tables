@@ -1,7 +1,6 @@
 # Tables
 
-The Tables project seeks to create automations for Hack for LA’s volunteer onboarding processes. Previously, Hack for LA’s Executive Director, Bonnie Wolfe, had been adding new volunteers to Hack for LA’s various platforms (such as Google Drive and GitHub organization) manually during every onboarding meeting (which occur every week!). This project seeks to help ease the onboarding burden by creating automations for adding users to Hack for LA’s platforms during these onboarding sessions.
-
+This project aims to automate volunteer onboarding for Hack for LA’s platforms, reducing the burden on the Executive Director.
 
 ### Project context
 
