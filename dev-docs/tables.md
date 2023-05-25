@@ -6,7 +6,16 @@ To access the Google Tables project, go to: https://tables.area120.google.com/ab
 
 ## The different tables
 
-There are currently three tables within the project workspace (Volunteers, CoPs, and Projects). Below is a breakdown of the various tables and their functions.
+There are currently ten tables within the project workspace (Volunteers, CoPs, Projects, and a table for each CoP). Below is a breakdown of the various tables and their functions.
+
+- CoPs
+  - Data Science
+  - Dev Ops
+  - Engineering
+  - Marketing
+  - Product Management
+  - Revenue
+  - UI/UX
 
 ### Volunteers Table
 
@@ -20,9 +29,19 @@ The CoP table represents data for the various Communities of Practice within Hac
 
 The projects table represents data for the various projects within Hack for LA. Each row specifies one project. The columns of this table represent the various data specific to each project. Currently, there are no automations being done with projects so a majority of the columns for each project are blank.
 
+### Specific CoP Tables (Data Science, Dev Ops, Engineering, etc.)
+
+These specific CoP tables get their data from the main Volunteers Table. Users are first added to the Volunteers Table, then a bot from the Volunteers Table runs to add the user to their specifc CoP table. Once added to these specific CoP tables, a bot then runs to send the CoP's google calendar invite. This is set up this way due to a runtime limit. See https://github.com/hackforla/tables/blob/main/dev-docs/app-scripts.md for more info.
+
 ## Bots
 
-Bots are the way in which Google Tables can add automations for a particular table. Currently, there is only one bot called Onboarding Automation that is associated with the Volunteers table. It is triggered when a new row is added. It has an action that calls on a Google App Script called, “Tables Scripts” and calls that script’s onboardingAutomation function. As arguments, it passes the data (columns) for the newly added row (volunteer) into the onboardingAutomation function. You can see this bot and the bots associated with a particular table by going to the table in question and looking at the top right where it says “Bots”. Clicking on that will show the details for the Bot and its trigger and actions.
+Bots are the way in which Google Tables can add automations for a particular table.
+
+There is one bot called Onboarding Automation that is associated with the Volunteers table. It is triggered when a new row is added. It has an action that calls on a Google App Script called, “Tables Scripts” and calls that script’s onboardingAutomation function. As arguments, it passes the data (columns) for the newly added row (volunteer) into the onboardingAutomation function. You can see this bot and the bots associated with a particular table by going to the table in question and looking at the top right where it says “Bots”. Clicking on that will show the details for the Bot and its trigger and actions.
+
+There is another 7 other bots, each with a similar function. Their purpose is to add a row containing the user's name and emails to the specific CoP Table.
+
+Each of the specific CoP Tables have a single bot. That single bot's purpose is to send a calendar invite given the user's email.
 
 ## Forms
 
