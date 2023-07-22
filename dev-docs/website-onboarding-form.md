@@ -8,10 +8,10 @@ It achieves the above by collecting user input and inserting the data into the '
 - The table has bots that run whenever a new row/user is added onto the table
 - A row/user gets added upon form submission
 
-- There are currently 3 weekly team meeting invites sent out:
-	- Sunday: All Team Meeting
-	- Tuesday: Developer Meeting
-	- Thursday: Office Hours
+There are currently 3 weekly team meeting invites sent out:
+- Sunday: All Team Meeting
+- Tuesday: Developer Meeting
+- Thursday: Office Hours
 
 ## Where to find the website onboarding form?
 
