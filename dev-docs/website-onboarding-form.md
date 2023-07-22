@@ -3,7 +3,12 @@
 ## What is the website onboarding form?
 
 The website onboarding form a google form used to add members to the Google Drive, GitHub Team, and send out the weekly team meetings.
-- There are currently 3 weekly team meeting invites sent out
+
+It achieves the above by collecting user input and inserting the data into the 'Website Team Onboarding' Table
+- The table has bots that run whenever a new row/user is added onto the table
+- A row/user gets added upon form submission
+
+- There are currently 3 weekly team meeting invites sent out:
 	- Sunday: All Team Meeting
 	- Tuesday: Developer Meeting
 	- Thursday: Office Hours
