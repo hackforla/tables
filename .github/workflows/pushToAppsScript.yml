@@ -12,7 +12,7 @@ jobs:
         with:
           clasprcJSON: ${{ secrets.CLASPRC_JSON }}
           scriptId: ${{ env.SCRIPT_ID }}
-      - uses: ./.github/action/update_secret
+      - uses: ./.github/actions/update_secret
         with:
           currentCred: ${{ secrets.CLASPRC_JSON }}
           githubKey: ${{ github.token }}
