@@ -16,5 +16,5 @@ runs:
     - run: |
         sudo apt-get update
         sudo apt-get install jq
-        npx clasp run setEnv --nodev --params "[\"$(echo '${{ $(sed 's/\"/\\\"/g' <<< jq 'del(.CLASPRC_JSON, .SCRIPT_IDs)' <<< '${{ toJSON(inputs.newEnv) }}') }}')$([ -n "${{ inputs.confirmation }}" ] && echo ', "${{ inputs.confirmation }}"')\"]"
+        npx clasp run setEnv --nodev --params "[\"$(echo '${{ $(sed 's/\"/\\\"/g' <<< jq 'del(.CLASPRC_JSON, .SCRIPT_IDS)' <<< '${{ toJSON(inputs.newEnv) }}') }}')$([ -n "${{ inputs.confirmation }}" ] && echo ', "${{ inputs.confirmation }}"')\"]"
       shell: bash

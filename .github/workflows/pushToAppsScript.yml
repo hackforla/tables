@@ -1,7 +1,7 @@
 name: Push to Apps Script
 on: push
 env:
-  SCRIPT_ID: ${{ fromJSON(secrets.SCRIPT_IDs)[github.ref_name] }}
+  SCRIPT_ID: ${{ fromJSON(secrets.SCRIPT_IDS)[github.ref_name] }}
 jobs:
   pushToMainAppScript:
     if: env.SCRIPT_ID
