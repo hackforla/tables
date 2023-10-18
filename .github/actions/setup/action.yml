@@ -9,7 +9,6 @@ input:
     required: true
 runs:
   using: "composite"
-  id: setup
   steps:
     - run: |
         npm install
