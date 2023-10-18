@@ -1,6 +1,6 @@
 name: "Push to Apps Script"
 description: "Push to Apps Script"
-input:
+inputs:
   clasprcJson:
     description: "Clasp Auth File"
     required: true

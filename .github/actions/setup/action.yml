@@ -1,6 +1,6 @@
 name: "Setup"
 description: "Initial Setup for Apps Script"
-input:
+inputs:
   clasprcJson:
     description: "Clasp Auth File"
     required: true
