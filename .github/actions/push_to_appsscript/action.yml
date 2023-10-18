@@ -4,7 +4,7 @@ inputs:
   clasprcJson:
     description: "Clasp Auth File"
     required: true
-  scriptIds:
+  scriptId:
     description: "Script IDs to reference"
     required: true
 runs:
