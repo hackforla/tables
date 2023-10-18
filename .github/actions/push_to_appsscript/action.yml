@@ -14,5 +14,5 @@ runs:
       with:
         clasprcJSON: ${{ inputs.clasprcJson }}
         scriptId: ${{ inputs.scriptId }}
-    - run: npx clasp list && npx clasp push
+    - run: npx clasp push
       shell: sh
