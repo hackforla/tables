@@ -1,0 +1,6 @@
+!.github/
+.env.sample
+appsscript.json
+LICENSE
+package-lock.json
+package.json

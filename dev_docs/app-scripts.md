@@ -73,6 +73,4 @@ let properties = {
 - The function will send the calendar invite regardless of the timeout, but it will not run any subsequent actions if any (which is why this function was separated from the others and has its own execution for each CoP)
 - By separating this automation from the others, it will allow the addUserToDrive and addUserToGithub to run in one call
 
-
 ![onboardingAutomation workflow - Flowchart](https://github.com/hackforla/tables/assets/60123981/cb64f66d-b09a-472d-b228-1210900635b3)
-

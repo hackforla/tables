@@ -14,14 +14,10 @@ Due to the nature of this project, the code is not hosted publicly on GitHub unl
 - Goolge API
 - GitHub API
 
-
-
 # How to contribute
 
 - You will need to have attended a Hack for LA onboarding meeting and have been approved to join the team by Bonnie Wolfe.
 - After being approved, join the team slack channel at [#tables](https://app.slack.com/client/T04502KQX/C02LPQXUWJ0).
 - For Developers, please see the contributing folder (does not exist yet).
 
-
-
-*this readme file sourced from [Jessica Sand](http://jessicasand.com/other-stuff/just-enough-docs/)*
+_this readme file sourced from [Jessica Sand](http://jessicasand.com/other-stuff/just-enough-docs/)_

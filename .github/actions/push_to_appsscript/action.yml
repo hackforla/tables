@@ -1,0 +1,17 @@
+name: "Push to Apps Script"
+description: "Push to Apps Script"
+input:
+  clasprcJson:
+    description: "Clasp Auth File"
+    required: true
+  scriptIds:
+    description: "Script IDs to reference"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: ./.github/actions/setup
+      with:
+        clasprcJSON: ${{ inputs.clasprcJson }}
+        scriptId: ${{ inputs.scriptId }}
+    - run: npx clasp push

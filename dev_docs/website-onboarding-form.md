@@ -5,10 +5,12 @@
 The website onboarding form a google form used to add members to the Google Drive, GitHub Team, and send out the weekly team meetings.
 
 It achieves the above by collecting user input and inserting the data into the 'Website Team Onboarding' Table
+
 - The table has bots that run whenever a new row/user is added onto the table
 - A row/user gets added upon form submission
 
 There are currently 3 weekly team meeting invites sent out:
+
 - Sunday: All Team Meeting
 - Tuesday: Developer Meeting
 - Thursday: Office Hours
@@ -25,20 +27,22 @@ There are currently 3 weekly team meeting invites sent out:
 - First Name
 - Last Name
 - Email
-	- Used to add users to google drive
+  - Used to add users to google drive
 - GitHub Handle
-	- Used to add members to the GitHub Team
+  - Used to add members to the GitHub Team
 - Yes/No response to the Sunday meeting
 - Yes/No response to the Tuesday meeting
 - Yes/No response to the Thursday meeting
 
 ## How to use the website onboarding form?
+
 - Make sure that the form is turned on
-	- Check this by accessing the 'Website Team Onboarding' table and verify that it is toggled on
+  - Check this by accessing the 'Website Team Onboarding' table and verify that it is toggled on
 - Open the form and copy the URL to send out to users
 - The administrators who are running the onboarding should be the one to send out this URL to the new members
 
 ## Technical details of the Gihtub script
+
 Tables passes the script the invitee's username, their role, and the teams they are joining. This makes it easy to reuse for additional teams. Right now, the Github token and the organization name are stored as "environment variables" (which are simulated by properties). It is possible to pass the Github token in from Tables, but I don't believe it is a good idea to store secrets on Tables itself.
 
 An interesting thing to note is that the form _can not_ add someone who is not in the organization to the team. However, since anyone who is signing up for the website team should already be in the org, this is a non-issue.
@@ -58,7 +62,7 @@ If you search in the more general documentation, you will find this explanation 
 ![General 403 error code](https://github.com/hackforla/tables/assets/44281159/1361a9ca-285b-46ac-ab3d-5f2a41930b46)
 For whatever reason, Github requires that your token has the admin:org scope. Once this scope is added, the script can add members who were in the organization to the website and website-write team.
 
-Interestingly, trying to add someone who is not in the organization to a team gives a bizarre error code - which it was expected to error, the propor error code would be a 403 error as before. Instead, it gives this: 
+Interestingly, trying to add someone who is not in the organization to a team gives a bizarre error code - which it was expected to error, the propor error code would be a 403 error as before. Instead, it gives this:
 ![422 error](https://github.com/hackforla/tables/assets/44281159/cc302c66-218f-4077-8c04-7234ed36760b)
 Why a 422 error? Absolutely no clue. No where in the documentation does it mention how insufficient permissions would result in a 422 error code. However, it does make it easy to tell apart the token not having the required scopes and the user not having the required permissions at least.
 

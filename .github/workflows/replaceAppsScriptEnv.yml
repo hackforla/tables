@@ -1,0 +1,17 @@
+name: Replace Apps Script Environment
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        type: boolean
+        description: Confirm removing environment variables
+
+jobs:
+  replaceAppsScriptEnv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/replace_appsscript_env
+        with:
+          newEnv: ${{ toJSON(secrets) }}
+          confirmation: ${{ inputs.confirmation }}

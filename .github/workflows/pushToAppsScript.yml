@@ -1,0 +1,14 @@
+name: Push to Apps Script
+on: push
+env:
+  SCRIPT_ID: ${{ fromJSON(secrets.SCRIPT_IDs)[github.ref_name] }}
+jobs:
+  pushToMainAppScript:
+    if: env.SCRIPT_ID
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/push_to_appsscript
+        with:
+          clasprcJSON: ${{ secrets.CLASPRC_JSON }}
+          scriptId: ${{ env.SCRIPT_ID }}

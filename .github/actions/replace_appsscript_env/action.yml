@@ -1,0 +1,20 @@
+name: "Replace AppsScript Env"
+description: "Replace AppsScript Env"
+inputs:
+  newEnv:
+    description: "Environment variables to replace current Apps Script environment"
+    required: true
+  confirmation:
+    description: "Confirm removing env vars"
+runs:
+  using: "composite"
+  steps:
+    - uses: ./.github/actions/setup
+      with:
+        clasprcJSON: ${{ newEnv.CLASPRC_JSON }}
+        scriptId: ${{ fromJSON(newEnv.SCRIPT_ID).main }}
+    - run: |
+        sudo apt-get update
+        sudo apt-get install jq
+        npx clasp run setEnv --nodev --params "[\"$(echo '${{ $(sed 's/\"/\\\"/g' <<< jq 'del(.CLASPRC_JSON, .SCRIPT_IDs)' <<< '${{ toJSON(inputs.newEnv) }}') }}')$([ -n "${{ inputs.confirmation }}" ] && echo ', "${{ inputs.confirmation }}"')\"]"
+      shell: bash

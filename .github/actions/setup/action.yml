@@ -1,0 +1,18 @@
+name: "Setup"
+description: "Initial Setup for Apps Script"
+input:
+  clasprcJson:
+    description: "Clasp Auth File"
+    required: true
+  scriptId:
+    description: "Script ID to reference"
+    required: true
+runs:
+  using: "composite"
+  id: setup
+  steps:
+    - run: |
+        npm install
+        cat '${{ inputs.clasprcJson }}' > ~/.clasprc.json
+        sed '0,/REPLACE_WITH_SCRIPT_ID/s//${{ inputs.scriptId }}/' .clasp.json.template
+        mv .clasp.json.template .clasp.json
