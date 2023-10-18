@@ -11,8 +11,8 @@ runs:
   steps:
     - uses: ./.github/actions/setup
       with:
-        clasprcJSON: ${{ newEnv.CLASPRC_JSON }}
-        scriptId: ${{ fromJSON(newEnv.SCRIPT_ID).main }}
+        clasprcJSON: ${{ inputs.newEnv.CLASPRC_JSON }}
+        scriptId: ${{ fromJSON(inputs.newEnv.SCRIPT_ID).test }}
     - run: |
         sudo apt-get update
         sudo apt-get install jq
