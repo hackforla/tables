@@ -16,3 +16,4 @@ runs:
         cat '${{ inputs.clasprcJson }}' > ~/.clasprc.json
         sed '0,/REPLACE_WITH_SCRIPT_ID/s//${{ inputs.scriptId }}/' .clasp.json.template
         mv .clasp.json.template .clasp.json
+      shell: sh
