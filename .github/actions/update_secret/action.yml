@@ -14,5 +14,7 @@ runs:
   using: "composite"
   steps:
     - run: if [[ $(jd -set .clasp.json <<< '${{ inputs.currentCred }}') ]]; then echo 'UPDATE=1' >> $GITHUB_ENV; else echo 'UPDATE=0' >> $GITHUB_ENV'; fi
+      shell: bash
     - run: node ./helpers/updateSecret.json '${{ inputs.currentCred }}' ${{ inputs.githubKey }} ${{ inputs.repoName }}
       if: env.UPDATE == 1
+      shell: sh
