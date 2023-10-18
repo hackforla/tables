@@ -10,9 +10,11 @@
   "author": "Hack4LA",
   "license": "GPL-2.1-only",
   "dependencies": {
-    "@google/clasp": "^2.4.2"
+    "@google/clasp": "^2.4.2",
+    "sodium-native": "^4.0.4"
   },
   "devDependencies": {
+    "@types/node": "^20.8.7",
     "eslint": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
     "prettier": "3.0.3"
