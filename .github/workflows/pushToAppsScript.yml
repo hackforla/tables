@@ -4,11 +4,12 @@ env:
   SCRIPT_ID: ${{ fromJSON(secrets.SCRIPT_IDS)[github.ref_name] }}
 jobs:
   pushToMainAppScript:
-    if: env.SCRIPT_ID
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        if: env.SCRIPT_ID
       - uses: ./.github/actions/push_to_appsscript
+        if: env.SCRIPT_ID
         with:
           clasprcJSON: ${{ secrets.CLASPRC_JSON }}
           scriptId: ${{ env.SCRIPT_ID }}
