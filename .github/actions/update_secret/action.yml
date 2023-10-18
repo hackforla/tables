@@ -1,0 +1,18 @@
+name: "Update Secret Creds"
+description: "Update Secret Creds"
+inputs:
+  currentCred:
+    description: "Current Apps Script Creds"
+    required: true
+  githubKey:
+    description: "Github Auth Key"
+    required: true
+  repoName:
+    description: "Github Repo Name"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: if [[ $(jd -set .clasp.json <<< '${{ inputs.currentCred }}') ]]; then echo 'UPDATE=1' >> $GITHUB_ENV; else echo 'UPDATE=0' >> $GITHUB_ENV'; fi
+    - run: node ./helpers/updateSecret.json '${{ inputs.currentCred }}' ${{ inputs.githubKey }} ${{ inputs.repoName }}
+      if: env.UPDATE == 1

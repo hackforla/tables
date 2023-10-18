@@ -16,3 +16,4 @@ runs:
         scriptId: ${{ inputs.scriptId }}
     - run: npx clasp push
       shell: sh
+    - run: node ./helpers/updateSecret.js

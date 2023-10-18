@@ -7,9 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        if: env.SCRIPT_ID
       - uses: ./.github/actions/push_to_appsscript
         if: env.SCRIPT_ID
         with:
           clasprcJSON: ${{ secrets.CLASPRC_JSON }}
           scriptId: ${{ env.SCRIPT_ID }}
+      - uses: ./.github/action/update_secret
+        with:
+          currentCred: ${{ secrets.CLASPRC_JSON }}
+          githubKey: ${{ github.token }}
+          repoName: ${{ github.repository }}
