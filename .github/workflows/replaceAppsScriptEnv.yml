@@ -1,6 +1,6 @@
 name: Replace Apps Script Environment
 on:
-  workflow_dispatch:
+  push:
     inputs:
       confirmation:
         type: boolean
