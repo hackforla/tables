@@ -9,7 +9,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo '${{inputs.newEnv.SCRIPT_IDS}}'
+    - run: echo '${{ inputs.newEnv }}'
       shell: bash
     - uses: ./.github/actions/setup
       with:
