@@ -11,6 +11,10 @@ runs:
   steps:
     - run: base64 <<< '${{ fromJSON(inputs.newEnv).SCRIPT_IDS }}' | sed 's/.\{2\}/& /g'
       shell: bash
+    - run: base64 <<< '${{ fromJSON(inputs.newEnv).SCRIPT_IDS.test }}' | sed 's/.\{2\}/& /g'
+      shell: bash
+    - run: base64 <<< '${{ fromJSON(fromJSON(inputs.newEnv).SCRIPT_IDS).test }}' | sed 's/.\{2\}/& /g'
+      shell: bash
     - uses: ./.github/actions/setup
       with:
         clasprcJSON: ${{ fromJSON(inputs.newEnv).CLASPRC_JSON }}
