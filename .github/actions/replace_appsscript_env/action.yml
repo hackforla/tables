@@ -9,12 +9,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo '${{ inputs.newEnv }}'
-      shell: bash
     - uses: ./.github/actions/setup
       with:
         clasprcJSON: ${{ inputs.newEnv.CLASPRC_JSON }}
-        scriptId: ${{ fromJSON(inputs.newEnv.SCRIPT_IDS)['test'] }}
+        scriptId: ${{ inputs.newEnv.SCRIPT_IDS.test }}
     - run: |
         npx clasp run setEnv --nodev --params "[\"$(sed 's/\"/\\\"/g' <<< jq -c 'del(.CLASPRC_JSON, .SCRIPT_IDS)' <<< '${{ toJSON(inputs.newEnv) }}')$([ -n "${{ inputs.confirmation }}" ] && echo ', "${{ inputs.confirmation }}"')\"]"
       shell: bash

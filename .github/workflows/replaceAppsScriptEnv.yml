@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/replace_appsscript_env
         with:
-          newEnv: ${{ toJSON(secrets) }}
+          newEnv: ${{ secrets }}
           confirmation: ${{ inputs.confirmation }}
       - uses: ./.github/action/update_secret
         with:
