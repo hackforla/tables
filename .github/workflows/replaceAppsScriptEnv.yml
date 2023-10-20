@@ -11,9 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          clasprcJSON: ${{ secrets.CLASPRC_JSON }}
-          scriptId: ${{ env.SCRIPT_ID }}
       - uses: ./.github/actions/replace_appsscript_env
         with:
           newEnv: ${{ toJSON(secrets) }}
