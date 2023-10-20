@@ -9,6 +9,8 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - run: echo '${{ fromJSON(inputs.newEnv).SCRIPT_IDS.test }}'
+      shell: bash
     - uses: ./.github/actions/setup
       with:
         clasprcJSON: ${{ fromJSON(inputs.newEnv).CLASPRC_JSON }}
