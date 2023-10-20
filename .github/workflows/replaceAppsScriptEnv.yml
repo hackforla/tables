@@ -13,7 +13,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/replace_appsscript_env
         with:
-          newEnv: ${{ secrets }}
+          # JSON Objects can not be passed, so it must be converted to a string first.
+          newEnv: ${{ toJSON(secrets) }}
           confirmation: ${{ inputs.confirmation }}
       - uses: ./.github/action/update_secret
         with:
