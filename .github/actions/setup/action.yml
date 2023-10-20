@@ -11,8 +11,6 @@ runs:
   using: "composite"
   steps:
     - run: |
-        sudo apt-get update
-        sudo apt-get install jq
         npm install
         echo '${{ inputs.clasprcJson }}' > ~/.clasprc.json
         sed -i '0,/REPLACE_WITH_SCRIPT_ID/s//${{ inputs.scriptId }}/' .clasp.json.template
