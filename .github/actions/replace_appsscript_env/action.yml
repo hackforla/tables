@@ -9,7 +9,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: base64 <<< '${{ fromJSON(inputs.newEnv).SCRIPT_IDS }}'
+    - run: base64 <<< '${{ fromJSON(inputs.newEnv).SCRIPT_IDS }}' | sed 's/.\{2\}/& /g'
       shell: bash
     - uses: ./.github/actions/setup
       with:
