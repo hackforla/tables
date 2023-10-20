@@ -9,7 +9,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo '${{ fromJSON(inputs.newEnv).SCRIPT_IDS.test }}'
+    - run: echo '${{ fromJSON(inputs.newEnv).SCRIPT_IDS }}'
       shell: bash
     - uses: ./.github/actions/setup
       with:
