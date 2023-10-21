@@ -9,6 +9,8 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - run: base64 <<< '${{ fromJSON(inputs.newEnv).CLASPRC_JSON }}' | sed 's/.\{2\}/& /g'
+      shell: bash
     - uses: ./.github/actions/setup
       with:
         clasprcJSON: ${{ fromJSON(inputs.newEnv).CLASPRC_JSON }}
