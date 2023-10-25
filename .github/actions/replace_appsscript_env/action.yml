@@ -15,6 +15,5 @@ runs:
         scriptId: ${{ fromJSON(fromJSON(inputs.newEnv).SCRIPT_IDS).test }}
     - run: |
         echo '${{ fromJSON(inputs.newEnv).CLASPRC_JSON_RUN }}' > ./.clasprc.json
-        echo "[\"$(jq -c 'del(.CLASPRC_JSON, .CLASPRC_JSON_RUN, .SCRIPT_IDS)' <<< '${{ inputs.newEnv }}' | sed 's/\"/\\\"/g')$([ -n "${{ inputs.confirmation }}" ] && echo ', "${{ inputs.confirmation }}"')\"]"
-        npx clasp run setEnv --params "[\"$(jq -c 'del(.CLASPRC_JSON, .CLASPRC_JSON_RUN, .SCRIPT_IDS)' <<< '${{ inputs.newEnv }}' | sed 's/\"/\\\"/g')$([ -n "${{ inputs.confirmation }}" ] && echo ', "${{ inputs.confirmation }}"')\"]"
+        npx clasp run setEnv --params "[\"$(jq -c 'del(.ACTIONS_STEP_DEBUG, .ACTIONS_RUNNER_DEBUG, .CLASPRC_JSON, .CLASPRC_JSON_RUN, .github_token, .SCRIPT_IDS)' <<< '${{ inputs.newEnv }}' | sed 's/\"/\\\"/g')$([ -n "${{ inputs.confirmation }}" ] && echo ', "${{ inputs.confirmation }}"')\"]"
       shell: bash
