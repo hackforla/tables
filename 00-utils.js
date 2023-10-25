@@ -10,7 +10,7 @@ const setEnv = (envJSON, confirmation) => {
     const removedEnv = Object.keys(oldEnvKeys).filter(
       (envKey) => !newEnv.includes(envKey),
     );
-    if (removedEnv) {
+    if (removedEnv.length) {
       const removedEnvStr =
         removedEnv.length > 1
           ? `s ${removedEnv.slice(0, -1).join(", ")} and ${removedEnv.at(-1)}`
@@ -19,16 +19,10 @@ const setEnv = (envJSON, confirmation) => {
         `This action will delete the environment variable${removedEnvStr} without replacement. Please confirm by passing true to confirmation (2nd arg)`,
       );
     } else {
-      PropertiesService.getUserProperties().setProperties(
-        JSON.parse(envJSON),
-        true,
-      );
+      PropertiesService.getUserProperties().setProperties(newEnv, true);
     }
   } else {
-    PropertiesService.getUserProperties().setProperties(
-      JSON.parse(envJSON),
-      true,
-    );
+    PropertiesService.getUserProperties().setProperties(newEnv, true);
   }
 };
 
