@@ -1,6 +1,6 @@
 import * as sodium from "libsodium-wrappers";
 
-const keyInfo = await fetch(
+const keyInfoPromise = fetch(
   `https://api.github.com/repos/${process.argv[4]}/actions/secrets/public-key`,
   {
     headers: {
@@ -10,11 +10,12 @@ const keyInfo = await fetch(
       "X-GitHub-Api-Version": "2022-11-28",
     },
   },
-).json();
+);
 
 await sodium.ready();
-const binkey = sodium.from_base64(keyInfo.key, sodium.base64_variants.ORIGINAL);
 const binsec = sodium.from_string(process.argv[2]);
+const keyInfo = await keyInfoPromise();
+const binkey = sodium.from_base64(keyInfo.key, sodium.base64_variants.ORIGINAL);
 const encBytes = sodium.crypto_box_seal(binsec, binkey);
 const encryptedBase64 = sodium.to_base64(
   encBytes,
