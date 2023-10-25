@@ -1,7 +1,7 @@
 import _sodium from "libsodium-wrappers";
 
 await _sodium.ready;
-const keyInfo = JSON.parse(process.argv[5]);
+const keyInfo = JSON.parse(process.argv[6]);
 
 const sodium = _sodium;
 const binsec = sodium.from_string(process.argv[2]);
