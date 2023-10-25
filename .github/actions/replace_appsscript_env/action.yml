@@ -16,5 +16,5 @@ runs:
     - run: |
         echo '${{ fromJSON(inputs.newEnv).CLASPRC_JSON_RUN }}' > ./.clasprc.json
         echo "[\"$(jq -c 'del(.CLASPRC_JSON, .CLASPRC_JSON_RUN, .SCRIPT_IDS)' <<< '${{ inputs.newEnv }}' | sed 's/"/\"/g')$([ -n "${{ inputs.confirmation }}" ] && echo ', "${{ inputs.confirmation }}"')\"]"
-        npx clasp run setEnv --params "[\"$(jq -c 'del(.CLASPRC_JSON, .SCRIPT_IDS)' <<< '${{ inputs.newEnv }}' | sed 's/\"/\\\"/g')$([ -n "${{ inputs.confirmation }}" ] && echo ', "${{ inputs.confirmation }}"')\"]"
+        npx clasp run setEnv --params "[\"$(jq -c 'del(.CLASPRC_JSON, .CLASPRC_JSON_RUN, .SCRIPT_IDS)' <<< '${{ inputs.newEnv }}' | sed 's/"/\"/g')$([ -n "${{ inputs.confirmation }}" ] && echo ', "${{ inputs.confirmation }}"')\"]"
       shell: bash
