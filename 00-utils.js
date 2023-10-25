@@ -7,8 +7,8 @@ const setEnv = (envJSON, confirmation) => {
   const newEnv = JSON.parse(envJSON);
   if (!confirmation) {
     const oldEnvKeys = Object.keys(env);
-    const removedEnv = Object.keys(newEnv).filter(
-      (envKey) => !oldEnvKeys.includes(envKey),
+    const removedEnv = Object.keys(oldEnvKeys).filter(
+      (envKey) => !newEnv.includes(envKey),
     );
     if (removedEnv) {
       const removedEnvStr =
