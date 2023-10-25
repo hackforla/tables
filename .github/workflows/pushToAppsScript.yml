@@ -18,4 +18,5 @@ jobs:
           path: "~/.clasprc"
           secretName: "CLASPRC_JSON"
           githubKey: ${{ github.token }}
+          githubPublicKey: ${{ secrets.PUBLIC_KEY_GITHUB }}
           repoName: ${{ github.repository }}

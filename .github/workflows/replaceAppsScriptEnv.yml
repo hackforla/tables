@@ -22,6 +22,7 @@ jobs:
           path: "~/.clasprc"
           secretName: "CLASPRC_JSON"
           githubKey: ${{ github.token }}
+          githubPublicKey: ${{ secrets.PUBLIC_KEY_GITHUB }}
           repoName: ${{ github.repository }}
       - uses: ./.github/actions/update_secret
         with:
@@ -29,4 +30,5 @@ jobs:
           path: "./.clasprc"
           secretName: "CLASPRC_JSON_RUN"
           githubKey: ${{ github.token }}
+          githubPublicKey: ${{ secrets.PUBLIC_KEY_GITHUB }}
           repoName: ${{ github.repository }}
