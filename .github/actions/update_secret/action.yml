@@ -4,6 +4,12 @@ inputs:
   currentCred:
     description: "Current Apps Script Creds"
     required: true
+  path:
+    description: "Path to Old Creds"
+    required: true
+  secretName:
+    description: "Secret Name"
+    required: true
   githubKey:
     description: "Github Auth Key"
     required: true
@@ -13,8 +19,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: if [[ $(cmp --silent .clasp.json <<< '${{ inputs.currentCred }}') ]]; then echo 'UPDATE=1' >> $GITHUB_ENV; else echo 'UPDATE=0' >> $GITHUB_ENV; fi
+    - run: if [[ $(cmp --silent '${{ inputs.path }}' <<< '${{ inputs.currentCred }}') ]]; then echo 'UPDATE=1' >> $GITHUB_ENV; else echo 'UPDATE=0' >> $GITHUB_ENV; fi
       shell: bash
-    - run: node ./.github/actions/update_secret/updateSecret.json '${{ inputs.currentCred }}' ${{ inputs.githubKey }} ${{ inputs.repoName }}
+    - run: node ./.github/actions/update_secret/updateSecret.json '${{ inputs.currentCred }}' '${{ inputs.githubKey }}' '${{ inputs.repoName }}' '${{ inputs.secretName }}'
       if: env.UPDATE == 1
       shell: sh

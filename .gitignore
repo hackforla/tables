@@ -1,5 +1,4 @@
+.clasprc.json
 .env
-.eslintcache
-.npm
+client_secret_*.json
 node_modules/
-npm-debug.log*

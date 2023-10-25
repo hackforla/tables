@@ -15,5 +15,7 @@ jobs:
       - uses: ./.github/actions/update_secret
         with:
           currentCred: ${{ secrets.CLASPRC_JSON }}
+          path: "~/.clasprc"
+          secretName: "CLASPRC_JSON"
           githubKey: ${{ github.token }}
           repoName: ${{ github.repository }}

@@ -1,40 +1,40 @@
 {
-	"env": {
-		"es2023": true,
-		"node": true
-	},
-	"rules": {
-		"strict": ["error", "global"]
-	},
-	"parserOptions": {
-		"sourceType": "module"
-	},
-	"extends": ["eslint:recommended", "eslint-config-prettier"],
-	"overrides": [
-		{
-			"files": ["./*.js"],
-			"globals": {
-				"Drive": "readonly",
-				"CalendarApp": "readonly",
-				"PropertiesService": "readonly",
-				"CacheService": "readonly",
-				"UrlFetchApp": "readonly",
-				"Utilities": "readonly",
-				"env": "readonly",
-				"console": "readonly"
-			},
-			"parserOptions": {
-				"sourceType": "script"
-			},
-			"env": {
-				"node": false
-			}
-		},
-		{
-			"files": ["utils.js"],
-			"globals": {
-				"env": "off"
-			}
-		}
-	]
+  "env": {
+    "es2023": true,
+    "node": true
+  },
+  "rules": {
+    "strict": ["error", "global"]
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "extends": ["eslint:recommended", "eslint-config-prettier"],
+  "overrides": [
+    {
+      "files": ["./*.js"],
+      "globals": {
+        "Drive": "readonly",
+        "CalendarApp": "readonly",
+        "PropertiesService": "readonly",
+        "CacheService": "readonly",
+        "UrlFetchApp": "readonly",
+        "Utilities": "readonly",
+        "env": "readonly",
+        "console": "readonly"
+      },
+      "parserOptions": {
+        "sourceType": "script"
+      },
+      "env": {
+        "node": false
+      }
+    },
+    {
+      "files": ["00-utils.js"],
+      "globals": {
+        "env": "off"
+      }
+    }
+  ]
 }

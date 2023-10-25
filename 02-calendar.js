@@ -4,18 +4,18 @@
 
 // Due to timeout restrictions, currently only 1 request can be processed at a time
 const addToCalendar = (
-	passphrase,
-	gmail,
-	preferred_email,
-	/* calendarInviteeEmail,*/ calendarID,
-	calendarEventID,
+  passphrase,
+  gmail,
+  preferred_email,
+  /* calendarInviteeEmail,*/ calendarID,
+  calendarEventID,
 ) => {
-	// Needed since this is called standalone
-	if (checkCoCPassphrase(passphrase)) {
-		CalendarApp.getCalendarById(calendarID)
-			.getEventSeriesById(calendarEventID)
-			.addGuest(gmail ?? preferred_email);
-	}
+  // Needed since this is called standalone
+  if (checkCoCPassphrase(passphrase)) {
+    CalendarApp.getCalendarById(calendarID)
+      .getEventSeriesById(calendarEventID)
+      .addGuest(gmail ?? preferred_email);
+  }
 };
 
 /*
