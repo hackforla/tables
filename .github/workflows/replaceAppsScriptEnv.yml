@@ -16,14 +16,14 @@ jobs:
           # JSON Objects can not be passed, so it must be converted to a string first.
           newEnv: ${{ toJSON(secrets) }}
           confirmation: ${{ inputs.confirmation }}
-      - uses: ./.github/action/update_secret
+      - uses: ./.github/actions/update_secret
         with:
           currentCred: ${{ secrets.CLASPRC_JSON }}
           path: "~/.clasprc"
           secretName: "CLASPRC_JSON"
           githubKey: ${{ github.token }}
           repoName: ${{ github.repository }}
-      - uses: ./.github/action/update_secret
+      - uses: ./.github/actions/update_secret
         with:
           currentCred: ${{ secrets.CLASPRC_JSON }}
           path: "./.clasprc"
