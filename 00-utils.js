@@ -6,8 +6,10 @@ const env = PropertiesService.getUserProperties().getProperties();
 const setEnv = (envJSON, confirmation) => {
   const newEnv = JSON.parse(envJSON);
   if (!confirmation) {
-	const oldEnvKeys = Object.keys(env);
-    const removedEnv = Object.keys(newEnv).filter((envKey) => !oldEnvKeys.includes(envKey));
+    const oldEnvKeys = Object.keys(env);
+    const removedEnv = Object.keys(newEnv).filter(
+      (envKey) => !oldEnvKeys.includes(envKey),
+    );
     if (removedEnv) {
       const removedEnvStr =
         removedEnv.length > 1
