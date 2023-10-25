@@ -24,6 +24,6 @@ runs:
   steps:
     - run: if [[ $(cmp --silent '${{ inputs.path }}' <<< '${{ inputs.currentCred }}') ]]; then echo 'UPDATE=1' >> $GITHUB_ENV; else echo 'UPDATE=1' >> $GITHUB_ENV; fi
       shell: bash
-    - run: node ./.github/actions/update_secret/updateSecret.js '${{ inputs.currentCred }}' '${{ inputs.githubKey }}' '${{ inputs.repoName }}' '${{ inputs.secretName }}' '${{ githubPublicKey }}'
+    - run: node ./.github/actions/update_secret/updateSecret.js '${{ inputs.currentCred }}' '${{ inputs.githubKey }}' '${{ inputs.repoName }}' '${{ inputs.secretName }}' '${{ inputs.githubPublicKey }}'
       if: env.UPDATE == 1
       shell: sh
