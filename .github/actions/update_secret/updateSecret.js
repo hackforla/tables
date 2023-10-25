@@ -1,4 +1,4 @@
-import * as sodium from "libsodium-wrappers";
+import _sodium from "libsodium-wrappers";
 
 const keyInfoPromise = fetch(
   `https://api.github.com/repos/${process.argv[4]}/actions/secrets/public-key`,
@@ -12,7 +12,8 @@ const keyInfoPromise = fetch(
   },
 );
 
-await sodium.ready;
+await _sodium.ready;
+const sodium = _sodium;
 const binsec = sodium.from_string(process.argv[2]);
 const keyInfo = (await keyInfoPromise).json();
 const binkey = sodium.from_base64(keyInfo.key, sodium.base64_variants.ORIGINAL);
