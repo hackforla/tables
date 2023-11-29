@@ -1,6 +1,8 @@
 /* exported getAllZoomMeetingsRequest */
 "use strict";
 
+// This uses the Zoom GraphQL Oauth Server API to add users to meetings.
+
 const getOauthToken = () => {
   const cache = CacheService.getUserCache();
   let oauthToken = cache.get("oauthToken");

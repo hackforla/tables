@@ -1,6 +1,9 @@
 /* exported env, setEnv, checkCoCPassphrase, doAllRequests */
 "use strict";
 
+// This defines the environment variables for the rest of the program. This file must be run first
+// Any helper functions often needed like functions to check the Code of Conduct password can be put here too.
+
 const env = PropertiesService.getUserProperties().getProperties();
 
 const setEnv = (envJSON, confirmation) => {

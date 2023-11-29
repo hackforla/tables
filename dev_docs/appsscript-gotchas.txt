@@ -1,0 +1,6 @@
+1) do NOT use await/async. AppScript allows this but still only processes everything on a single thread with few exceptions - await and async will not work the way you expect it to!
+2) No ES or CommonJS imports/exports - AppsScript runs every file in order (see file-format for order). It is important you follow eslint's syntax for clarity, but it does not affect AppsScript
+3) AppsScript feature support is all over the place - do not depend on a certain ES version. Test the feature in AppsScript to see if it works or not.
+4) Do NOT define global variables - with few exceptions, this is a mistake. The global variables will be defined in every file.
+5) Do NOT run code outside of a function - AppsScript will run all code outside of a function all the time, which is usually a mistake.
+6) Don't forget about the timeout limit! Its shorter than normal due to Tables calling it.

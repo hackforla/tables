@@ -2,6 +2,8 @@
 /* globals checkCoCPassphrase, getGithubOrgRequest, getAllZoomMeetingsRequest, addToAllDrives, doAllRequests */
 "use strict";
 
+// This is the function that the Google Table will call. This file must be run 2nd to last.
+
 const inviteUserToServices = (
   passphrase,
   gmail,

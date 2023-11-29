@@ -2,6 +2,8 @@
 /* globals doAllRequests */
 "use strict";
 
+// This uses the Github HTTP api to add users to the github org and teams.
+
 const getGithubOrgRequest = (
   githubOrg,
   githubInviteeUsername,

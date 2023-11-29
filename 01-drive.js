@@ -1,6 +1,8 @@
 /*exported addToAllDrives */
 "use strict";
 
+// This adds people to drive using the AppsScript Drive API
+
 const addToDrive = (driveInviteeEmail, driveRole, driveID) => {
   Drive.Permissions.insert(
     {

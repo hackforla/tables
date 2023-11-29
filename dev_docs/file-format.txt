@@ -1,0 +1,9 @@
+The default way clasp uploads files is by alphebetical order. File upload order is important as that determines Google AppScript execution order.
+For consistency, XX-filename.js is used. XX is an integer representing the upload order of the file - 
+if you've used *nix systems before you may have seen this format used for config files.
+
+While this isn't 100% accurate, the simpliest way to visualize what the file upload order should be is to concate all the javascript files. File 00 is at the top, file 99 is at the bottom, etc.
+This is the order Google AppsScript evaluates the files in.
+
+Typically, this won't matter too much as long as your file is run after the util file and before the main file. However, it is important to ensure the number you put is unique.
+If you're javascript depends on js from another file, make sure it runs after that file. If it provides js for another file, it needs to run before.

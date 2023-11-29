@@ -1,0 +1,3 @@
+1) "use strict"; must be at the top of all js files to ensure strict mode.
+2) /* exported {} */ comment is used to list all the functions other scripts use that are defined in this file. 
+3) /* globals {} */ comment is used to list all the functions this script uses that are defined in other files.

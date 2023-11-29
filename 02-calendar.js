@@ -2,6 +2,8 @@
 /* globals checkCoCPassphrase */
 "use strict";
 
+// This adds people to Google Calendar using the AppsScript Calendar API. However, due to timeout restrictions only 1 calendar can be shared with someone at a time.
+
 // Due to timeout restrictions, currently only 1 request can be processed at a time
 const addToCalendar = (
   passphrase,
