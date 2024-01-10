@@ -1,4 +1,5 @@
 /* exported getAllZoomMeetingsRequest */
+// https://script.google.com/u/1/home/projects/1ovgRAodgGqx8eqbvTnSpkTBuMnY92VSVavYvquqOHcVUSjxKwgjmUb_w/edit
 "use strict";
 
 // This uses the Zoom GraphQL Oauth Server API to add users to meetings.
@@ -51,7 +52,7 @@ const getOauthToken = () => {
 };
 
 const getZoomMeetingRequest = (email, firstName, lastName, meetingID) =>
-  `addMeetingRegistrant(input: {\
+  `meetingID${meetingID}: addMeetingRegistrant(input: {\
  autoApprove: \\"true\\",\
  email: \\"${email}\\",\
  firstName: \\"${firstName}\\",\
