@@ -23,14 +23,14 @@ Due to the nature of this project, the code is not hosted publicly on GitHub unl
 - For Developers, please see the contributing folder (does not exist yet).
 
 ## See all issues by platform
-GitHub
-Google Drive
-Google Calendar
-Slack
-1Password
-Figma
-Google Sites
-Zoom
-Meetup
+- GitHub
+- Google Drive
+- Google Calendar
+- Slack
+- 1Password
+- Figma
+- Google Sites
+- Zoom
+- Meetup
 
 *this readme file sourced from [Jessica Sand](http://jessicasand.com/other-stuff/just-enough-docs/)*
