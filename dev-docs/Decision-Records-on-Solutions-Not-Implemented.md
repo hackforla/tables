@@ -12,4 +12,4 @@ This is a record in the [Decision Records on Solutions Not Implemented](https://
 ```
 
 ## Records
-- [DR: Order values in form fields Alphabetically, where there is more than once choice](DR:-Form-value-sort-order)
+- [DR: Order values in form fields Alphabetically, where there is more than once choice](DR:-Form-value-sort-order.md)
