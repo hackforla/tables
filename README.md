@@ -22,6 +22,15 @@ Due to the nature of this project, the code is not hosted publicly on GitHub unl
 - After being approved, join the team slack channel at [#tables](https://app.slack.com/client/T04502KQX/C02LPQXUWJ0).
 - For Developers, please see the contributing folder (does not exist yet).
 
-
+## See all issues by platform
+GitHub
+Google Drive
+Google Calendar
+Slack
+1Password
+Figma
+Google Sites
+Zoom
+Meetup
 
 *this readme file sourced from [Jessica Sand](http://jessicasand.com/other-stuff/just-enough-docs/)*
