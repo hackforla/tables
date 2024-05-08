@@ -15,7 +15,7 @@ Jenny Chu | PM | linkedin.com/in/chu-jenny
 Michelle Lam | PM | linkedin.com/in/mchlllm
 Grace Fredrick | PM | linkedin.com/in/gracennennafredrick
 Aishwarya Harikumar | PM | linkedin.com/in/aishwaryaharikumar
-Justin Hang | Engineer | https://www.linkedin.com/in/hang-justin
+Justin Hang | Engineer | linkedin.com/in/hang-justin
 Sharon Lnu | PM | linkedin.com/in/sharon-lnu-6949801a3
 Kenny Tram | Engineer | linkedin.com/in/kennytram
 Toe Arkar | Engineer | linkedin.com/in/toe-arkar-504b40248
