@@ -5,9 +5,8 @@ Name | Role | LinkedIn
 -- | -- | --
 Bonnie Wolfe | ORG Stakeholder | linkedin.com/in/bonnieawolfe
 Harrison Katz | Engineer | linkedin.com/in/hkatzdev/
-Wesley Lin | Engineer |  
-Jessica Chen | Product Manager | linkedin.com/in/jessicatchen
 Lily Ng | Product Manager | linkedin.com/in/lilykatherine
+Kenalpha Kipyegon |	Engineer | https://www.linkedin.com/in/kenalpha-kipyegon-23b865163/
 
 ### Former team members
 Name | Role | LinkedIn
@@ -21,3 +20,5 @@ Sharon Lnu | PM | linkedin.com/in/sharon-lnu-6949801a3
 Kenny Tram | Engineer | linkedin.com/in/kennytram
 Toe Arkar | Engineer | linkedin.com/in/toe-arkar-504b40248
 Tyler Kontra | Engineer | linkedin.com/in/tylerkontra
+Wesley Lin | Engineer |  
+Jessica Chen | Product Manager | linkedin.com/in/jessicatchen
