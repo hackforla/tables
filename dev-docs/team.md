@@ -4,9 +4,9 @@
 Name | Role | LinkedIn
 -- | -- | --
 Bonnie Wolfe | ORG Stakeholder | linkedin.com/in/bonnieawolfe
-Harrison Katz | Engineer | linkedin.com/in/hkatzdev/
+Harrison Katz | Engineer | linkedin.com/in/hkatzdev
 Lily Ng | Product Manager | linkedin.com/in/lilykatherine
-Kenalpha Kipyegon |	Engineer | https://www.linkedin.com/in/kenalpha-kipyegon-23b865163/
+Kenalpha Kipyegon |	Engineer | linkedin.com/in/kenalpha-kipyegon-23b865163
 
 ### Former team members
 Name | Role | LinkedIn
