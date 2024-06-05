@@ -1,0 +1,18 @@
+{
+  "name": "@hackforla-tables/google-common",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/main.js"
+  },
+  "dependencies": {
+    "@googleapis/calendar": "^9.7.4",
+    "@googleapis/drive": "^8.9.0",
+    "@jrmdayn/googleapis-batcher": "^0.8.0",
+    "google-auth-library": "^9.10.0"
+  },
+  "devDependencies": {
+    "gaxios": "^6.6.0"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@hackforla-tables/github-org",
+  "version": "0.1.0",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "start": "wrangler dev"
+  },
+  "type": "module",
+  "dependencies": {
+    "octokit": "^4.0.2"
+  },
+  "devDependencies": {
+    "@octokit/openapi-types": "^22.2.0",
+    "@octokit/types": "^13.5.0"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "@hackforla-tables/google-calendar",
+  "version": "0.1.0",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "start": "wrangler dev"
+  },
+  "dependencies": {
+    "@googleapis/calendar": "^9.7.4",
+    "@googleapis/drive": "^8.9.0",
+    "@hackforla-tables/google-common": "workspace:^"
+  },
+  "type": "module"
+}

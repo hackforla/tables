@@ -1,0 +1,13 @@
+{
+  "name": "@hackforla-tables/google-drive",
+  "version": "0.1.0",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "start": "wrangler dev"
+  },
+  "dependencies": {
+    "@hackforla-tables/google-common": "workspace:^"
+  },
+  "type": "module"
+}

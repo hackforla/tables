@@ -1,0 +1,34 @@
+{
+  "name": "hackforla-tables",
+  "version": "0.1.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240603.0",
+    "@eslint/js": "^9.4.0",
+    "@types/eslint": "^8.56.10",
+    "@types/eslint-plugin-security": "^3.0.0",
+    "@types/eslint__js": "^8.42.3",
+    "@types/node": "^20.14.2",
+    "eslint": "^9.4.0",
+    "eslint-plugin-jsdoc": "^48.2.7",
+    "eslint-plugin-jsonc": "^2.16.0",
+    "eslint-plugin-security": "^3.0.0",
+    "eslint-plugin-unicorn": "^53.0.0",
+    "neostandard": "^0.5.1",
+    "wrangler": "^3.59.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@typescript-eslint/util": "^8.0.0-alpha.27",
+      "eslint": "$eslint"
+    }
+  },
+  "packageManager": "pnpm@9.1.4+sha1.2432063d815cfa88fd9fef1d85a445e3f609851d"
+}
