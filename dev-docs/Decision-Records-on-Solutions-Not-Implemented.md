@@ -12,4 +12,5 @@ This is a record in the [Decision Records on Solutions Not Implemented](https://
 ```
 
 ## Records
-[DR:Form value sort order](https://github.com/hackforla/tables/blob/main/dev-docs/DR%3A-Form-value-sort-order.md)
+- [DR:Form value sort order](https://github.com/hackforla/tables/blob/main/dev-docs/DR%3A-Form-value-sort-order.md)
+- [DR:External API](https://github.com/hackforla/tables/blob/main/dev-docs/DR-External-API.md)
