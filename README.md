@@ -20,7 +20,10 @@ Due to the nature of this project, the code is not hosted publicly on GitHub unl
 
 - You will need to have attended a Hack for LA onboarding meeting and have been approved to join the team by Bonnie Wolfe.
 - After being approved, join the team slack channel at [#tables](https://app.slack.com/client/T04502KQX/C02LPQXUWJ0).
-- For Developers, please see the contributing folder (does not exist yet).
+- For Developers
+   - please see the [CONTRIBUTING.md](/dev-docs/CONTRIBUTING.md)
+   - All the rest of our documentation is in the [dev-docs](https://github.com/hackforla/tables/tree/main/dev-docs) folder on this repo
+   - We store any documents, presentations, etc. in the [Tables Google Drive](https://drive.google.com/drive/folders/0AO5HWG9daZAtUk9PVA) 
 
 ## See all issues by platform
 - GitHub
