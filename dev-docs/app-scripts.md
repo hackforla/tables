@@ -36,6 +36,9 @@ The file in question is in the "Scripts" folder and open a file called "Tables S
 - addUserToGitHub - Adds the user's GitHub to the organization and the CoP team.
 - addUserToDrive - Adds user to the CoP google drive as a contributor.
 - addUserToCopCalendar - Sends a google calendar invite for the CoP's meetings.
+- AuditGoogleDrivesPermission - Audit All the HFLA projects' google drive Users' permission
+- GoogleformTimeTrigger - Turn "Accepting responses" on/off for onboarding google form according to onboarding meeting schedule
+- GoogleformTimeTrigger_Copy-for_2_form - Turn "Accepting responses" on/off for onboarding google form according to onboarding meeting schedule
 
 ### addUserToGitHub
 
@@ -72,6 +75,39 @@ let properties = {
   - https://developers.google.com/apps-script/guides/services/quotas
 - The function will send the calendar invite regardless of the timeout, but it will not run any subsequent actions if any (which is why this function was separated from the others and has its own execution for each CoP)
 - By separating this automation from the others, it will allow the addUserToDrive and addUserToGithub to run in one call
+
+### AuditGoogleDrivesPermission
+
+- To Run on Appscript Run the funtion "Run"
+- The script go over the all the drives listed and generate each users' permission role in to a CSV file named 'google_drive_permissions_audit.csv'
+- To Audit more/less drives, update driveIDs list in the Run function
+- tables@hackforla.org would need permission for auditting the drive
+- The script log driveID that does not have permission to open in execution log
+- The script is located in tables@hackforla.org google drive > Scripts > Google Drive Permissions > AuditGoogleDrivesPermissionAuditGoogleDrivesPermission
+
+### GoogleformTimeTrigger
+
+- Generate time trigger according to onboarding meeting schdule from HFLA Volunteers-[Onboarding - Schedule] table
+- The time trigger turn google form AcceptingResponses feature on/off according to on and off time from the table
+- The script weed out past events and only create triggers for 3( google has limit of 20 trigger per script) closest future events
+- There are 3 bots that will call the script in the [Onboarding - Schedule] table
+  - New edit trigger : call the script every time the event time is editted
+  - weekly update trigger : call the script every week (Monday 1AM) to update the trigger
+  - weekly clear trigger : clear all triggers before weekly update
+- To Deploy: 
+  - Change formID in function openForm() & closeForm() to target google form ID on line 80 & 87
+- The script is located in tables@hackforla.org google drive > Scripts > GoogleformTimeTrigger
+
+### GoogleformTimeTrigger_Copy-for_2_form
+
+- same as GoogleformTimeTrigger beside turn 2 form AcceptingResponses feature on/off
+- To Deploy: 
+  - Change formID in function openForm() & closeForm() to target google form ID on line 80 81 & 90 91
+  - change the 3 bots mentioned above in GoogleformTimeTrigger to trigger GoogleformTimeTrigger_Copy-for_2_form instead
+- The script is located in tables@hackforla.org google drive > Scripts > GoogleformTimeTrigger_Copy-for_2_form
+
+
+
 
 
 ![onboardingAutomation workflow - Flowchart](https://github.com/hackforla/tables/assets/60123981/cb64f66d-b09a-472d-b228-1210900635b3)
