@@ -78,7 +78,7 @@ let properties = {
 
 ### AuditGoogleDrivesPermission
 
-- To Run on Appscript Run the funtion "Run"
+- To Run on Appscript execute the funtion "Run"
 - The script runs though all the drives listed and generates a CSV (created date + 'google_drive_permissions_audit.csv') with each users' permission details 
 - To Audit more/less drives, update driveIDs list in the Run function
 - tables@hackforla.org would need permission for auditting the drive
