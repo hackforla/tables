@@ -93,7 +93,7 @@ let properties = {
 - There are 3 bots that will call the script in the [Onboarding - Schedule] table
   - New edit trigger: calls the script every time the event time is editted
   - weekly update trigger: calls the script every week (Monday at 1AM) to update the trigger
-  - weekly clear trigger : clear all triggers before weekly update
+  - weekly clear trigger: clears all triggers before weekly update, in order to prevent exceeding the 20 trigger limit
 - To Deploy: 
   - Change formID in function openForm() & closeForm() to target google form ID on line 80 & 87
 - The script is located in tables@hackforla.org google drive > Scripts > GoogleformTimeTrigger
