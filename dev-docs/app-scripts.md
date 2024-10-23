@@ -92,7 +92,7 @@ let properties = {
 - The script weeds out past events and only creates triggers for the 3 closest future events.  Google limits to no more than 20 triggers per script
 - There are 3 bots that will call the script in the [Onboarding - Schedule] table
   - New edit trigger: calls the script every time the event time is editted
-  - weekly update trigger : call the script every week (Monday 1AM) to update the trigger
+  - weekly update trigger: calls the script every week (Monday at 1AM) to update the trigger
   - weekly clear trigger : clear all triggers before weekly update
 - To Deploy: 
   - Change formID in function openForm() & closeForm() to target google form ID on line 80 & 87
