@@ -89,7 +89,7 @@ let properties = {
 
 - Generate time trigger according to onboarding meeting schdule from HFLA Volunteers-[Onboarding - Schedule] table
 - The time trigger turns google form AcceptingResponses feature on/off according to on and off time from the table
-- The script weed out past events and only create triggers for 3( google has limit of 20 trigger per script) closest future events
+- The script weeds out past events and only creates triggers for the 3 closest future events.  Google limits to no more than 20 triggers per script
 - There are 3 bots that will call the script in the [Onboarding - Schedule] table
   - New edit trigger : call the script every time the event time is editted
   - weekly update trigger : call the script every week (Monday 1AM) to update the trigger
