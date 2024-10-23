@@ -82,7 +82,7 @@ let properties = {
 - The script runs though all the drives listed and generates a CSV (created date + 'google_drive_permissions_audit.csv') with each users' permission details 
 - To Audit more/less drives, update driveIDs list in the Run function
 - tables@hackforla.org would need permission for auditting the drive
-- The script log driveID that does not have permission to open in execution log
+- If tables@hackforla.org does not have permission to access the drive, the drive ID will appear in the execution log with the text "list permission to Drive with driveID: "+driveID+ " fails " (where +driveID+ is replaced with the drive ID
 - The script is located in tables@hackforla.org google drive > Scripts > Google Drive Permissions > AuditGoogleDrivesPermissionAuditGoogleDrivesPermission
 
 ### GoogleformTimeTrigger
