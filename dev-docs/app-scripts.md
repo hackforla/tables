@@ -100,7 +100,7 @@ let properties = {
 
 ### GoogleformTimeTrigger_Copy-for_2_form
 
-- same as GoogleformTimeTrigger beside turn 2 form AcceptingResponses feature on/off
+- same functions as GoogleformTimeTrigger and also allows for a second form AcceptingResponses feature on/off
 - To Deploy: 
   - Change formID in function openForm() & closeForm() to target google form ID on line 80 81 & 90 91
   - change the 3 bots mentioned above in GoogleformTimeTrigger to trigger GoogleformTimeTrigger_Copy-for_2_form instead
