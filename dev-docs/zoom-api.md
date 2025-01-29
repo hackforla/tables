@@ -69,7 +69,7 @@ fields for use in generating an authorization token are the account id, which we
 The other field that we need to provide is the authorization token. This needed to be created in a way using a base64 encoded string that is initially formatted like so before encoding: "client_id:secret_token".
 There are a couple of way to do such an encoding:
 
-* You can use the command line in OS X: `echo -n "[client_secret]:[secret_token]" | openssl base64
+* You can use the command line in OS X: `echo -n "[client_secret]:[secret_token]" | openssl base64`
 * Or you can provide a string in the above format to a service online that will do the encoding for you.
 
 ```
