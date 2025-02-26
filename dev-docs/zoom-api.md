@@ -20,7 +20,6 @@ detailed below.
 
 - You will first need access to the admin account that we use for Zoom.
   Please try and use that account first if you can.
-- From there you will find step-by-step guidance that should provide the necessary
   information on how to finish creating an app account and what credentials/permissions to add to that account.
 - Make sure to store the account id, client id, and secret token somewhere secure for later use.
 
