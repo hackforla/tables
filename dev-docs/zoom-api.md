@@ -91,6 +91,8 @@ curl --request GET \
 - `https://zoom.us/myhome` — home page once logged in as admin. You need
   admin access to create new Zoom Apps for API use. Keep in mind that we
   already have a working Zoom App account.
+
+#### How to add a new Zoom marketplace app
 - `https://marketplace.zoom.us/` — Once logged in as an admin, this is where
   you can create new Zoom Apps if need be. The only reason I can think of to do this though
   is if existing Zoom Apps don't have the required permissions to make necessary API calls.
