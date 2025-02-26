@@ -101,4 +101,8 @@ curl --request GET \
   you can create new Zoom Apps if need be. The only reason I can think of to do this though
   is if existing Zoom Apps don't have the required permissions to make necessary API calls.
   It seems that once created, you cannot alter the permissions/scopes on a Zoom Marketplace App Account.
+  - Login, and then from there you can go to the Zoom marketplace, hover over "Develop", and then click "Build App". An App's credentials will be needed to make API calls. Just keep in mind, that you may need additional permissions to log into that admin zoom account, and we would ideally want to just use the existing App Account anyways for API calls.
+   - From there you will find step-by-step guidance that should provide the necessary
+  information on how to finish creating an app account and what credentials/permissions to add to that account.
+   - Make sure to store the account id, client id, and secret token in the Tables 1Password vault for later use.
 - `https://marketplace.zoom.us/user/build` — Space where you can see existing Zoom Marketplace Apps and manage them.
