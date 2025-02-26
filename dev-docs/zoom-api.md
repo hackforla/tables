@@ -87,7 +87,7 @@ curl --request GET \
 ```
 
 ### Resources
-
+#### How to access the Zoom admin account
 - `https://zoom.us/myhome` — home page once logged in as admin. You need
   admin access to create new Zoom Apps for API use. Keep in mind that we
   already have a working Zoom App account.
