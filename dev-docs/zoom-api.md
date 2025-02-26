@@ -17,7 +17,6 @@ to Zoom meetings, meeting participants, and registrants is called "Hack for LA Z
 Please use that to make API calls. The credentials associated with that account are
 detailed below.
 
-we can create a new one to make calls to Zoom's API.
 
 - You will first need access to the admin account that we use for Zoom.
 - Login, and then from there you can go to the Zoom marketplace, hover over "Develop", and then click "Build App". An App's credentials will be needed to make API calls. Just keep in mind, that you may need additional permissions to log into that admin zoom account, and we would ideally want to just use the existing App Account anyways for API calls.
