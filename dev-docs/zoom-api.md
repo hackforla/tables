@@ -17,7 +17,6 @@ to Zoom meetings, meeting participants, and registrants is called "Hack for LA Z
 Please use that to make API calls. The credentials associated with that account are
 detailed below.
 
-If for whatever reason you don't have access to that App account, then
 we can create a new one to make calls to Zoom's API.
 
 - You will first need access to the admin account that we use for Zoom.
