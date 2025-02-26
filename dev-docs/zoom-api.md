@@ -17,7 +17,6 @@ Please use that to make API calls. The credentials associated with that account 
 detailed below.
 
 
-- You will first need access to the admin account that we use for Zoom.
   Please try and use that account first if you can.
 
 ### Typical API Calls We May Want to make
