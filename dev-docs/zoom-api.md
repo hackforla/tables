@@ -19,7 +19,6 @@ detailed below.
 
 
 - You will first need access to the admin account that we use for Zoom.
-- Login, and then from there you can go to the Zoom marketplace, hover over "Develop", and then click "Build App". An App's credentials will be needed to make API calls. Just keep in mind, that you may need additional permissions to log into that admin zoom account, and we would ideally want to just use the existing App Account anyways for API calls.
   Please try and use that account first if you can.
 - From there you will find step-by-step guidance that should provide the necessary
   information on how to finish creating an app account and what credentials/permissions to add to that account.
