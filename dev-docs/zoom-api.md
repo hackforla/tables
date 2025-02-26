@@ -8,7 +8,7 @@ or to make certain API calls. You can really think of them as an API user accoun
 On this project, we have already created a Zoom Marketplace App account. See "Resources" section for details.
 
 ### Creating an App Account to call the API
-See Zoom documentation if you need to do this
+On this project, we have already created a Zoom Marketplace App account. See "Resources" section for details. 
 
 ### Hack for LA's Zoom Marketplace Apps to use on this project
 Right now, we have a couple of Zoom Marketplace App accounts that allow users to make calls into the Zoom
