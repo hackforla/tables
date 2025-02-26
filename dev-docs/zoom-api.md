@@ -17,7 +17,6 @@ Please use that to make API calls. The credentials associated with that account 
 detailed below.
 
 
-  Please try and use that account first if you can.
 
 ### Typical API Calls We May Want to make
 
