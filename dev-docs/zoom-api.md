@@ -5,7 +5,6 @@
 A couple of things we should go over before proceeding. To use the Zoom API, we need access to Zoom Marketplace App accounts.
 These accounts at creation time are given permissions that allow them to take certain actions on behalf of someone
 or to make certain API calls. You can really think of them as an API user account.
-On this project, we have already created a Zoom Marketplace App account. See "Resources" section for details.
 
 ### Creating an App Account to call the API
 On this project, we have already created a Zoom Marketplace App account. See "Resources" section for details. 
