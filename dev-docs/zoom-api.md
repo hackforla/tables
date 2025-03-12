@@ -2,9 +2,7 @@
 
 ### Intro
 
-To use the Zoom API, we need access to Zoom Marketplace App accounts.
-These accounts at creation time are given permissions that allow them to take certain actions on behalf of someone
-or to make certain API calls.
+To use the Zoom API, we need access to Zoom Marketplace App accounts. These accounts at creation time are given permissions that allow them to take certain actions on behalf of someone or to make certain API calls.
 
 ### Creating an App Account to call the API
 
@@ -12,16 +10,12 @@ On this project, we have already created a Zoom Marketplace App account. See [Re
 
 ### Hack for LA's Zoom Marketplace Apps to use on this project
 
-Right now, we have a couple of Zoom Marketplace App accounts that allow users to make calls into the Zoom
-API if need be. The one with the most permissions and the permissions related to retrieving information related
-to Zoom meetings, meeting participants, and registrants is called "Hack for LA Zoom API" in the Zoom Marketplace.
-Please use that to make API calls. The credentials associated with that account are
-detailed below.
+Right now, we have a couple of Zoom Marketplace App accounts that allow users to make calls into the Zoom API if need be. The one with the most permissions and the permissions related to retrieving information related to Zoom meetings, meeting participants, and registrants is called "Hack for LA Zoom API" in the Zoom Marketplace.
+Please use that to make API calls. The credentials associated with that account are detailed below.
 
 ### Typical API Calls We May Want to make
 
-Here is a list of potential calls that we would want to make. The endpoints
-to use, scopes needed per Zoom marketplace App, and a brief description.
+Here is a list of potential calls that we would want to make. The endpoints to use, scopes needed per Zoom marketplace App, and a brief description.
 
 - List all meetings
   - Endpoint: `https://developers.zoom.us/docs/api/meetings/#tag/meetings/GET/users/{userId}/meetings`
@@ -44,31 +38,19 @@ to use, scopes needed per Zoom marketplace App, and a brief description.
 
 #### Notes for API Calls
 
-You need a list of meetings and their ids to make the second and third API calls above. One way to get that information is to
-first get a list of meetings for a single user. The user in this case
-will really be a Zoom Marketplace App account that we have created for our
-own use.
-Scopes listed are essentially permissions granted to an App
-account. `Scopes` are broad scopes granted during Zoom App creation.
-While still supported, `Scopes` are an older style of permission management within Zoom and are on their way to deprecation.
-`Granular Scopes` are a more finely-grained version of scopes that are used
-for new Zoom Apps.
+You need a list of meetings and their ids to make certain API calls, such as the API call above for getting a list of participants for a past meeting. One way to get that information is to first get a list of meetings for a single user. The user in this case will really be a Zoom Marketplace App account that we have created for our own use.
+Scopes listed are essentially permissions granted to an App account. `Scopes` are broad scopes granted during Zoom App creation. While still supported, `Scopes` are an older style of permission management within Zoom and are on their way to deprecation. `Granular Scopes` are a more finely-grained version of scopes that are used for new Zoom Apps.
 
 ### Usage
 
-To make a call to Zoom's API, you need an OAuth token. These tokens must
-be generated and are typically valid for 1 hour.
-The account id that we need to make the API all below is listed in the Tables
-1Password entry under "Hack for LA Zoom API". Other necessary fields for the
-instructions below can also be found under the same 1Password entry.
+To make a call to Zoom's API, you need an OAuth token. These tokens must be generated and are typically valid for 1 hour. The account id that we need to make the API all below is listed in the Tables 1Password entry under "Hack for LA Zoom API". Other necessary fields for the instructions below can also be found under the same 1Password entry.
 
 #### Generating an Authorization Token to Make API Calls
 
 The relevant fields for use in generating an authorization token are:
 
 - Account id: which we set to the field with the same name as a form parameter.
-- Authorization token: this needs to be created using base64 encoded string that is initially formatted like so before encoding: "client_id:secret_token".
-  There are a couple of way to do such an encoding.
+- Authorization token: this needs to be created using base64 encoded string that is initially formatted like so before encoding: "client_id:secret_token". There are a couple of way to do such an encoding.
   - You can use the command line in OS X: `echo -n "[client_secret]:[secret_token]" | openssl base64`
   - Or you can provide a string in the above format to a service online that will do the encoding for you.
 
@@ -78,9 +60,7 @@ curl -X POST https://zoom.us/oauth/token -d 'grant_type=account_credentials' \
   'Authorization: Basic [base64 encoded combination of client secret and secret token]'
 ```
 
-Once you have a generated authorization token from the API call above, store it somewhere temporarily and include
-it as your Bearer token in an API call that you wish to make. Here is an example API call
-that you could make with cURL.
+Once you have a generated authorization token from the API call above, store it somewhere temporarily and include it as your Bearer token in an API call that you wish to make. Here is an example API call that you could make with cURL.
 
 ```
 curl --request GET \
@@ -93,17 +73,12 @@ curl --request GET \
 
 #### How to access the Zoom admin account
 
-- Log in as an admin. The only account with true admin privileges is `zoom@civictechstructure.org`. The login information for this
-  account should be on Tables 1Password vault.
-- `https://zoom.us/myhome` — home page once logged in as admin. You need
-  admin access to create new Zoom Apps for API use. Keep in mind that we already have a working Zoom App account.
+- Log in as an admin. The only account with true admin privileges is `zoom@civictechstructure.org`. The login information for this account should be on Tables 1Password vault.
+- `https://zoom.us/myhome` — home page once logged in as admin. You need admin access to create new Zoom Apps for API use. Keep in mind that we already have a working Zoom App account.
 
 #### How to add a new Zoom marketplace app
 
-- `https://marketplace.zoom.us/` — Once logged in as an admin, this is where
-  you can create new Zoom Apps if need be. The only reason I can think of to do this though
-  is if existing Zoom Apps don't have the required permissions to make necessary API calls.
-  It seems that once created, you cannot alter the permissions/scopes on a Zoom Marketplace App Account.
+- `https://marketplace.zoom.us/` — Once logged in as an admin, this is where you can create new Zoom Apps if need be. The only reason I can think of to do this though is if existing Zoom Apps don't have the required permissions to make necessary API calls. It seems that once created, you cannot alter the permissions/scopes on a Zoom Marketplace App Account.
   - Login, and then from there you can go to the Zoom marketplace, hover over "Develop", and then click "Build App". An App's credentials will be needed to make API calls. Just keep in mind, that you may need additional permissions to log into that admin zoom account, and we would ideally want to just use the existing App Account anyways for API calls.
   - From there you will find step-by-step guidance that should provide the necessary
     information on how to finish creating an app account and what credentials/permissions to add to that account.
