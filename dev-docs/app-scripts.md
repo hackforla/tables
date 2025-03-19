@@ -90,10 +90,9 @@ let properties = {
 - Generate time trigger according to onboarding meeting schdule from HFLA Volunteers-[Onboarding - Schedule] table
 - The time trigger turns google form AcceptingResponses feature on/off according to on and off time from the table
 - The script weeds out past events and only creates triggers for the 3 closest future events.  Google limits to no more than 20 triggers per script
-- There are 3 bots that will call the script in the [Onboarding - Schedule] table
+- The script will has a weekly update trigger on Sunday 23:30. 
+- There is a bot that will call the script in the [Onboarding - Schedule] table
   - New edit trigger: calls the script every time the event time is editted
-  - weekly update trigger: calls the script every week (Monday at 1AM) to update the trigger
-  - weekly clear trigger: clears all triggers before weekly update, in order to prevent exceeding the 20 trigger limit
 - To Deploy: 
   - Change formID in function openForm() & closeForm() to target google form ID on line 80 & 87
 - The script is located in tables@hackforla.org google drive > Scripts > GoogleformTimeTrigger
@@ -102,8 +101,8 @@ let properties = {
 
 - same functions as GoogleformTimeTrigger and also allows for a second form AcceptingResponses feature on/off
 - To Deploy: 
-  - Change formID in function openForm() & closeForm() to target google form ID on line 80 81 & 90 91
-  - change the 3 bots mentioned above in GoogleformTimeTrigger to trigger GoogleformTimeTrigger_Copy-for_2_form instead
+  - Change formID in function openForm() & closeForm() to target google form ID on line 94 95 & 104 105
+  - change the bot "New edit trigger" mentioned above in Google tables to trigger GoogleformTimeTrigger_Copy-for_2_form instead
 - The script is located in tables@hackforla.org google drive > Scripts > GoogleformTimeTrigger_Copy-for_2_form
 
 
