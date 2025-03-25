@@ -9,6 +9,34 @@ To use the Zoom API, we need access to Zoom App Marketplace accounts. During set
 Use the Zoom App Marketplace account called "Hack for LA Zoom API" to make API calls. The credentials for that account are detailed below.
 We do have other Zoom App Marketplace accounts which also allow users to make calls into the Zoom API and can be used if necessary. However, the "Hack for LA Zoom API" account is strongly recommended because it has the most permissions, including for retrieving information about Zoom meetings, participants, and registrants.
 
+### Usage
+
+To make a call to Zoom's API, you need an OAuth token. These tokens must be generated and are typically valid for 1 hour. The account id that we need to make the API all below is listed in the Tables 1Password entry under "Hack for LA Zoom API". Other necessary fields for the instructions below can also be found under the same 1Password entry.
+
+#### Generating an Authorization Token to Make API Calls
+
+The relevant fields for use in generating an authorization token are:
+
+- Account id: which we set to the field with the same name as a form parameter.
+- Authorization token: this needs to be created using base64 encoded string that is initially formatted like so before encoding: "client_id:secret_token". There are a couple of way to do such an encoding.
+  - You can use the command line in OS X: `echo -n "[client_secret]:[secret_token]" | openssl base64`
+  - Or you can provide a string in the above format to a service online that will do the encoding for you.
+
+```
+curl -X POST https://zoom.us/oauth/token -d 'grant_type=account_credentials' \
+  -d 'account_id=[account_id]' -H 'Host: zoom.us' -H \
+  'Authorization: Basic [base64 encoded combination of client secret and secret token]'
+```
+
+Once you have a generated authorization token from the API call above, store it somewhere temporarily and include it as your Bearer token in an API call that you wish to make. Here is an example API call that you could make with cURL.
+
+```
+curl --request GET \
+  --url https://api.zoom.us/v2/users/tables@hackforla.org/meetings \
+  --header 'Authorization: Bearer [BEARER_TOKEN]' \
+  --header 'Content-Type: application/x-www-form-urlencoded'
+```
+
 ### Typical API Calls We May Want to make
 
 Here is a list of potential calls to make, together with their endpoints, scopes (per Zoom App Marketplace), and a brief description.
@@ -38,34 +66,6 @@ Here is a list of potential calls to make, together with their endpoints, scopes
 - `Scopes` are essentially permissions granted to a Zoom App Marketplace account during its creation. There are currently 2 types:
   - `Scopes` - an older style of permission management within Zoom which are still supported but on their way to deprecation.
   - `Granular Scopes` - a more finely-grained version used for new Zoom Apps.
-
-### Usage
-
-To make a call to Zoom's API, you need an OAuth token. These tokens must be generated and are typically valid for 1 hour. The account id that we need to make the API all below is listed in the Tables 1Password entry under "Hack for LA Zoom API". Other necessary fields for the instructions below can also be found under the same 1Password entry.
-
-#### Generating an Authorization Token to Make API Calls
-
-The relevant fields for use in generating an authorization token are:
-
-- Account id: which we set to the field with the same name as a form parameter.
-- Authorization token: this needs to be created using base64 encoded string that is initially formatted like so before encoding: "client_id:secret_token". There are a couple of way to do such an encoding.
-  - You can use the command line in OS X: `echo -n "[client_secret]:[secret_token]" | openssl base64`
-  - Or you can provide a string in the above format to a service online that will do the encoding for you.
-
-```
-curl -X POST https://zoom.us/oauth/token -d 'grant_type=account_credentials' \
-  -d 'account_id=[account_id]' -H 'Host: zoom.us' -H \
-  'Authorization: Basic [base64 encoded combination of client secret and secret token]'
-```
-
-Once you have a generated authorization token from the API call above, store it somewhere temporarily and include it as your Bearer token in an API call that you wish to make. Here is an example API call that you could make with cURL.
-
-```
-curl --request GET \
-  --url https://api.zoom.us/v2/users/tables@hackforla.org/meetings \
-  --header 'Authorization: Bearer [BEARER_TOKEN]' \
-  --header 'Content-Type: application/x-www-form-urlencoded'
-```
 
 ### Resources
 
