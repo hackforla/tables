@@ -2,16 +2,12 @@
 
 ### Intro
 
-To use the Zoom API, we need access to Zoom Marketplace App accounts. These accounts at creation time are given permissions that allow them to take certain actions on behalf of someone or to make certain API calls.
-
-### Creating an App Account to call the API
-
-On this project, we have already created a Zoom Marketplace App account. See [Resources](https://github.com/hackforla/tables/blob/main/dev-docs/zoom-api.md#resources) section for details.
+To use the Zoom API, we need access to Zoom App Marketplace accounts. During setup, these accounts are granted permission to make certain API calls and take certain actions on behalf of a user.
 
 ### Hack for LA's Zoom Marketplace Apps to use on this project
 
-Right now, we have a couple of Zoom Marketplace App accounts that allow users to make calls into the Zoom API if need be. The one with the most permissions and the permissions related to retrieving information related to Zoom meetings, meeting participants, and registrants is called "Hack for LA Zoom API" in the Zoom Marketplace.
-Please use that to make API calls. The credentials associated with that account are detailed below.
+We have a couple of Zoom Marketplace App accounts that allow users to make calls into the Zoom API if need be. The one with the most permissions and the permissions related to retrieving information related to Zoom meetings, meeting participants, and registrants is called "Hack for LA Zoom API" in the Zoom Marketplace.
+Please use that to make API calls. The credentials associated with that account are detailed below — see [Resources](https://github.com/hackforla/tables/blob/main/dev-docs/zoom-api.md#resources) section for details.
 
 ### Typical API Calls We May Want to make
 
