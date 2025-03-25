@@ -11,31 +11,33 @@ We do have other Zoom App Marketplace accounts which also allow users to make ca
 
 ### Typical API Calls We May Want to make
 
-Here is a list of potential calls that we would want to make. The endpoints to use, scopes needed per Zoom marketplace App, and a brief description.
+Here is a list of potential calls to make, together with their endpoints, scopes (per Zoom App Marketplace), and a brief description.
 
 - List all meetings
   - Endpoint: `https://developers.zoom.us/docs/api/meetings/#tag/meetings/GET/users/{userId}/meetings`
   - Scopes: `meeting:read,meeting:read:admin`
   - Granular scopes: `meeting:read:list_meetings,meeting:read:list_meetings:admin`
-  - Description: Retrieve a list of all meetings
+  - Description: Retrieves a list of all meetings
 - Who attended an onboarding
   - Endpoint: `GET /past_meetings/{meetingId}/participants`
   - Documentation URL: `https://developers.zoom.us/docs/api/meetings/#tag/meetings/GET/past_meetings/{meetingId}/participants`
-  - Description: Gives a list of participants of a past meeting.
+  - Description: Retrieves a list of participants in a past meeting
   - Caveat: Does not return information if there was only one participant
   - Scopes: `meeting:read:admin,meeting:read`
-  - Grandular Scopes: `meeting:read:list_past_participants,meeting:read:list_past_participants:admin`
+  - Granular Scopes: `meeting:read:list_past_participants,meeting:read:list_past_participants:admin`
 - Who registered for an onboarding
   - Endpoint: `GET /meetings/{meetingId}/registrants`
   - Documentation URL: `https://developers.zoom.us/docs/api/meetings/#tag/meetings/GET/meetings/{meetingId}/registrants`
-  - Description: List users that have registered for a meeting.
+  - Description: Retrieves a list of users who have registered for a meeting
   - Scopes: `meeting:read:admin,meeting:read`
   - Granular Scopes: `meeting:read:list_registrants,meeting:read:list_registrants:admin`
 
 #### Notes for API Calls
 
-You need a list of meetings and their ids to make certain API calls, such as the API call above for getting a list of participants for a past meeting. One way to get that information is to first get a list of meetings for a single user. The user in this case will really be a Zoom Marketplace App account that we have created for our own use.
-Scopes listed are essentially permissions granted to an App account. `Scopes` are broad scopes granted during Zoom App creation. While still supported, `Scopes` are an older style of permission management within Zoom and are on their way to deprecation. `Granular Scopes` are a more finely-grained version of scopes that are used for new Zoom Apps.
+- In order to make certain API calls (such as the API call above for retrieving a list of participants in a past meeting), you first need a list of meetings and their ids. One way to get that information is to get a list of meetings for a single 'user' which is actually a Zoom App Marketplace account we have created for our own use — such as "Hack for LA Zoom API" account mentioned earlier.
+- `Scopes` are essentially permissions granted to a Zoom App Marketplace account during its creation. There are currently 2 types:
+  - `Scopes` - an older style of permission management within Zoom which are still supported but on their way to deprecation.
+  - `Granular Scopes` - a more finely-grained version used for new Zoom Apps.
 
 ### Usage
 
