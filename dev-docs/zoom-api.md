@@ -11,13 +11,13 @@ We do have other Zoom App Marketplace accounts which also allow users to make ca
 
 ### Usage
 
-To make a call to Zoom's API, you need an OAuth token. These tokens must be generated and are typically valid for 1 hour. The account id that we need to make the API call below for an authorizationtoken is listed in the Tables 1Password entry under "Hack for LA Zoom API". Other necessary fields for the instructions below can also be found under the same 1Password entry.
+To make a call to Zoom's API, you need an OAuth token. These tokens must be generated and are typically valid for 1 hour. The account ID that we need to make the API call below for an authorizationtoken is listed in the Tables 1Password entry under "Hack for LA Zoom API". Other necessary fields for the instructions below can also be found under the same 1Password entry.
 
 #### Generating an Authorization Token to Make API Calls
 
 The relevant fields for use in generating an authorization token are:
 
-- Account id: set to the field with the same name as a form parameter.
+- Account ID: set to the field with the same name as a form parameter.
 - Authorization token: this needs to be created using base64 encoded string formatted as follows: "client_id:secret_token". This can then be encoded by:
   - Using the command line in OS X: `echo -n "[client_secret]:[secret_token]" | openssl base64`
   - Or by pasting the string into an online service that will do the encoding for you.
@@ -81,7 +81,7 @@ Here is a list of potential calls to make, together with their endpoints, scopes
   - Go to the Zoom App Marketplace, hover over "Develop" at the top, and click "Build App"
   - There, you'll find step-by-step guidance on how to finish creating an Zoom Marketplace App account and the credentials/permissions that can be added to it
   - Remember that you'll need the new account's credentials to make API calls, so remember to store the following in the Tables 1Password vault for later use:
-    - Account id
-    - Client id
+    - Account ID
+    - Client ID
     - Secret token
 - `https://marketplace.zoom.us/user/build`: Where you can see existing Zoom Marketplace Apps and manage them.
