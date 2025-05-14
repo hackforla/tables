@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+      - 95-github-action-pre-push-hook
+  workflow_dispatch: # Optional: allows manual triggering for testing
 
 jobs:
   clasp-push:
