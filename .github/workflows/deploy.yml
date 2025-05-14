@@ -1,0 +1,37 @@
+name: Deploy Script
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  clasp-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: main # Ensure the correct branch is checked out        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Install clasp
+        id: install-clasp
+        run: sudo npm install @google/clasp -g
+      - name: Write CLASP_CREDENTIALS secret to .clasprc.json file
+        run: |
+          echo "${CLASP_CREDENTIALS}" > "${HOME}/.clasprc.json"
+        env:
+          CLASP_CREDENTIALS: ${{secrets.CLASP_CREDENTIALS}}
+      - name: List files for debugging
+        run: ls -la
+      - name: Print working directory
+        run: pwd
+      - name: Make clasp_push.sh executable
+        run: chmod +x ./.github/scripts/clasp_push.sh
+      - name: Run clasp_push.sh
+        id: run-clasp-push
+        run: ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
