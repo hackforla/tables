@@ -14,8 +14,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: 95-github-action-pre-push-hook # Ensure the correct branch is checked out, add back when deploy   
+        #with:
+        #  ref: main # Ensure the correct branch is checked out, add back when deploy   
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -28,12 +28,6 @@ jobs:
           echo "${CLASP_CREDENTIALS}" > "${HOME}/.clasprc.json"
         env:
           CLASP_CREDENTIALS: ${{secrets.CLASPRC_JSON}}
-      - name: Debug Clasp Credentials
-        run: |
-          echo "CLASP_CREDENTIALS length: ${#CLASP_CREDENTIALS}"
-          echo "CLASP_CREDENTIALS starts with: ${CLASP_CREDENTIALS:0:10}"
-        env:
-          CLASP_CREDENTIALS: ${{ secrets.CLASP_CREDENTIALS }}
       - name: List files for debugging
         run: ls -la
       - name: Print working directory
