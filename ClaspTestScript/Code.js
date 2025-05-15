@@ -11,6 +11,7 @@ function Run() {
     var webinarId;
     var attendees = [];
     Logger.log("Test 123123123 5/14/2025")
+    Logger.log("Test 333333333 5/15/2025")
     webinars = listAllWebinars();//call zoom API to list all webinars
     Logger.log("-----------output1------------All Webinars ")
     Logger.log(webinars); // Log the meetings or process them accordingly
