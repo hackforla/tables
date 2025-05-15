@@ -27,7 +27,13 @@ jobs:
         run: |
           echo "${CLASP_CREDENTIALS}" > "${HOME}/.clasprc.json"
         env:
-          CLASP_CREDENTIALS: ${{secrets.CLASP_CREDENTIALS}}
+          CLASP_CREDENTIALS: ${{secrets.CLASPRC_JSON}}
+      - name: Debug Clasp Credentials
+        run: |
+          echo "CLASP_CREDENTIALS length: ${#CLASP_CREDENTIALS}"
+          echo "CLASP_CREDENTIALS starts with: ${CLASP_CREDENTIALS:0:10}"
+        env:
+          CLASP_CREDENTIALS: ${{ secrets.CLASP_CREDENTIALS }}
       - name: List files for debugging
         run: ls -la
       - name: Print working directory
