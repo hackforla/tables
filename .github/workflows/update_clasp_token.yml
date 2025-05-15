@@ -1,46 +1,49 @@
 name: Weekly Clasp Token Update
+
 on:
   schedule:
     - cron: '0 0 * * 1' # Runs every Monday at 00:00 UTC
   workflow_dispatch: # Allows manual triggering for immediate testing
+
 jobs:
   weekly-update:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: 95-github-action-pre-push-hook # Chain to main when deploy
+        # Removed 'ref' to checkout the triggering branch (e.g., main or 95-github-action-pre-push-hook)
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '16'
+
       - name: Install clasp
         run: npm install -g @google/clasp
+
       - name: Write CLASP_CREDENTIALS secret to .clasprc.json file
         run: |
-          echo "${CLASP_CREDENTIALS}" > "${HOME}/.clasprc.json"
-        env:
-          CLASP_CREDENTIALS: ${{secrets.CLASPRC_JSON}}
+          echo "${{ secrets.secrets.CLASPRC_JSON }}" > "${HOME}/.clasprc.json"
+          # Verify the file is valid JSON
+          jq . "${HOME}/.clasprc.json" || { echo "Invalid .clasprc.json"; exit 1; }
+
       - name: Check clasp login status
         id: clasp_login
-        run: clasp login --status
+        run: clasp login --status || { echo "Clasp login check failed"; exit 1; }
 
       - name: Save current .clasprc.json contents to CLASPRC_JSON_FILE environment variable
         id: save-clasprc
         run: |
           echo ::add-mask::$(tr -d '\n\r' < ~/.clasprc.json)
-          echo "CLASPRC_JSON_FILE=$(tr -d '\n\r' < ~/.clasprc.json)" >> $GITHUB_ENV        
-      
-      - name: Save CLASPRC_JSON_FILE environment variable to CLASPRC_JSON repo secret
+          echo "CLASPRC_JSON_FILE=$(tr -d '\n\r' < ~/.clasprc.json)" >> $GITHUB_ENV     
+
+      - name: Save CLASPRC_JSON_FILE to CLASP_CREDENTIALS repo secret
         id: set-clasprc-secret
-        if: ${{ env.CLASPRC_JSON_FILE != env.CLASPRC_JSON_SECRET  }}
+        if: env.CLASPRC_JSON_FILE != secrets.secrets.CLASPRC_JSON
         uses: hmanzur/actions-set-secret@v2.0.0
-        env:
-          CLASPRC_JSON_SECRET: ${{ secrets.CLASPRC_JSON }}
         with:
-          name: "CLASPRC_JSON"
+          name: "CLASP_CREDENTIALS"
           value: ${{ env.CLASPRC_JSON_FILE }}
           repository: ${{ github.repository }}
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
-        
