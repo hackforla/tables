@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - 95-github-action-pre-push-hook
+      - 95-github-action-pre-push-hook #For testing only
   workflow_dispatch: # Optional: allows manual triggering for testing
 
 jobs:
@@ -13,11 +13,11 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: main # Ensure the correct branch is checked out        
+        uses: actions/checkout@v4
+        #with:
+        #  ref: main # Ensure the correct branch is checked out, add back when deploy   
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
       - name: Install clasp
