@@ -45,7 +45,7 @@ jobs:
           echo "CLASPRC_JSON_FILE=$(tr -d '\n\r' < ~/.clasprc.json)" >> $GITHUB_ENV     
       
       - name: Update CLASPRC_JSON
-        if: env.CLASPRC_JSON_FILE != secrets.CLASPRC_JSON
+        if: env.CLASPRC_JSON_FILE != ${{ secrets.REPO_ACCESS_TOKEN }}
         env:
           GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
         run: |
