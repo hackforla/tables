@@ -44,18 +44,17 @@ jobs:
           echo ::add-mask::$(tr -d '\n\r' < ~/.clasprc.json)
           echo "CLASPRC_JSON_FILE=$(tr -d '\n\r' < ~/.clasprc.json)" >> $GITHUB_ENV     
       
-      - name: Save CLASPRC_JSON_FILE to CLASP_CREDENTIALS repo secret
-        id: set-clasprc-secret
-        if: env.CLASPRC_JSON_FILE != secrets.secrets.CLASPRC_JSON
-        uses: hmanzur/actions-set-secret@v2.0.0
-        with:
-          name: "CLASP_CREDENTIALS"
-          value: ${{ env.CLASPRC_JSON_FILE }}
-          repository: ${{ github.repository }}
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+      - name: Update CLASPRC_JSON
+        if: env.CLASPRC_JSON_FILE != secrets.CLASPRC_JSON
+        env:
+          GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+        run: |
+          echo "${{ env.CLASPRC_JSON_FILE }}" | gh secret set CLASPRC_JSON --repo ${{ github.repository }}
+       
       #RUN CLASP PUSH SCRIPT
       - name: Make clasp_push.sh executable
         run: chmod +x ./.github/scripts/clasp_push.sh
+
       - name: Run clasp_push.sh
         id: run-clasp-push
         run: ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
