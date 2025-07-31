@@ -94,7 +94,7 @@ jobs:
 
 
         if: env.CLASPRC_JSON_FILE != secrets.CLASPRC_JSON
-        
+
 
         env:
 
@@ -117,4 +117,6 @@ jobs:
       - name: Run clasp_push.sh
 
         id: run-clasp-push
+
+        run: ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
 
