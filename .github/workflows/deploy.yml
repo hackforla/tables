@@ -56,5 +56,3 @@ jobs:
           else
             ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
           fi
-        # Clean up sensitive file
-        run: rm "${HOME}/.clasprc.json"
