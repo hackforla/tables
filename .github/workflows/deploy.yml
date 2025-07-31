@@ -94,9 +94,7 @@ jobs:
 
 
         if: env.CLASPRC_JSON_FILE != secrets.CLASPRC_JSON
-
-
-        if: env.CLASPRC_JSON_FILE != ${{ secrets.REPO_ACCESS_TOKEN }}
+        
 
         env:
 
