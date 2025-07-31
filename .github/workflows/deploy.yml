@@ -1,9 +1,11 @@
-name: Weekly Clasp Token Update
+name: Deploy Script
 
 on:
-  schedule:
-    - cron: '0 12 * * 1' # Runs every Monday at 12:00 UTC
-  workflow_dispatch: # Allows manual triggering
+  push:
+    branches:
+      - main
+      - 95-github-action-pre-push-hook # For testing only
+  workflow_dispatch: # Allows manual triggering for testing
 
 # Restrict GITHUB_TOKEN permissions
 permissions:
@@ -11,12 +13,18 @@ permissions:
   actions: read
 
 jobs:
-  weekly-update:
+  clasp-push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        # Pinned to specific SHA for security
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@6c4d7e9e3b7a36685a48b814d48eb136af31f297 # v45.0.2
+        # Pinned to specific SHA for security
 
       - name: Set up Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
@@ -24,36 +32,29 @@ jobs:
           node-version: '16'
 
       - name: Install clasp
-        run: npm install -g @google/clasp
+        id: install-clasp
+        run: npm install -g @google/clasp # Removed sudo for compatibility
 
       - name: Write CLASP_CREDENTIALS secret to .clasprc.json
         env:
           CLASP_CREDENTIALS: ${{ secrets.CLASP_CREDENTIALS }}
         run: |
           echo "$CLASP_CREDENTIALS" > "${HOME}/.clasprc.json"
+          # Validate JSON to ensure integrity
           jq . "${HOME}/.clasprc.json" || { echo "Invalid JSON in .clasprc.json"; exit 1; }
+          # Overwrite file to minimize exposure
           echo "{}" > "${HOME}/.clasprc.json"
 
-      - name: Check clasp login status
-        run: clasp login --status || { echo "Clasp login check failed"; exit 1; }
+      - name: Make clasp_push.sh executable
+        run: chmod +x ./.github/scripts/clasp_push.sh
 
-      - name: Save .clasprc.json contents to environment variable
-        id: save-clasprc
+      - name: Run clasp_push.sh
+        id: run-clasp-push
         run: |
-          CLASPRC_JSON_CONTENT=$(jq -c . "${HOME}/.clasprc.json")
-          echo ::add-mask::"$CLASPRC_JSON_CONTENT"
-          echo "CLASPRC_JSON_FILE=$CLASPRC_JSON_CONTENT" >> $GITHUB_ENV
-
-      - name: Update CLASP_CREDENTIALS secret
-        env:
-          GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
-          CLASP_CREDENTIALS_CURRENT: ${{ secrets.CLASP_CREDENTIALS }}
-        run: |
-          if [ "$CLASPRC_JSON_FILE" != "$CLASP_CREDENTIALS_CURRENT" ]; then
-            echo "$CLASPRC_JSON_FILE" | gh secret set CLASP_CREDENTIALS --repo ${{ github.repository }}
-            echo "Updated CLASP_CREDENTIALS secret"
+          if [ -z "${{ steps.changed-files.outputs.all_changed_files }}" ]; then
+            echo "No changes to push."
           else
-            echo "No update needed for CLASP_CREDENTIALS"
+            ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
           fi
-          # Clean up sensitive file
-          rm "${HOME}/.clasprc.json"
+        # Clean up sensitive file
+        run: rm "${HOME}/.clasprc.json"

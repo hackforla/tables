@@ -2,8 +2,13 @@ name: Weekly Clasp Token Update
 
 on:
   schedule:
-    - cron: '0 0 * * 1' # Runs every Monday at 00:00 UTC
-  workflow_dispatch: # Allows manual triggering for immediate testing
+    - cron: '0 12 * * 1' # Runs every Monday at 12:00 UTC
+  workflow_dispatch: # Allows manual triggering
+
+# Restrict GITHUB_TOKEN permissions
+permissions:
+  contents: read
+  actions: read
 
 jobs:
   weekly-update:
@@ -11,39 +16,44 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-        # Removed 'ref' to checkout the triggering branch (e.g., main or 95-github-action-pre-push-hook)
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
           node-version: '16'
 
       - name: Install clasp
         run: npm install -g @google/clasp
 
-      - name: Write CLASP_CREDENTIALS secret to .clasprc.json file
+      - name: Write CLASP_CREDENTIALS secret to .clasprc.json
+        env:
+          CLASP_CREDENTIALS: ${{ secrets.CLASP_CREDENTIALS }}
         run: |
-          echo "${{ secrets.secrets.CLASPRC_JSON }}" > "${HOME}/.clasprc.json"
-          # Verify the file is valid JSON
-          jq . "${HOME}/.clasprc.json" || { echo "Invalid .clasprc.json"; exit 1; }
+          echo "$CLASP_CREDENTIALS" > "${HOME}/.clasprc.json"
+          jq . "${HOME}/.clasprc.json" || { echo "Invalid JSON in .clasprc.json"; exit 1; }
+          echo "{}" > "${HOME}/.clasprc.json"
 
       - name: Check clasp login status
-        id: clasp_login
         run: clasp login --status || { echo "Clasp login check failed"; exit 1; }
 
-      - name: Save current .clasprc.json contents to CLASPRC_JSON_FILE environment variable
+      - name: Save .clasprc.json contents to environment variable
         id: save-clasprc
         run: |
-          echo ::add-mask::$(tr -d '\n\r' < ~/.clasprc.json)
-          echo "CLASPRC_JSON_FILE=$(tr -d '\n\r' < ~/.clasprc.json)" >> $GITHUB_ENV     
+          CLASPRC_JSON_CONTENT=$(jq -c . "${HOME}/.clasprc.json")
+          echo ::add-mask::"$CLASPRC_JSON_CONTENT"
+          echo "CLASPRC_JSON_FILE=$CLASPRC_JSON_CONTENT" >> $GITHUB_ENV
 
-      - name: Save CLASPRC_JSON_FILE to CLASP_CREDENTIALS repo secret
-        id: set-clasprc-secret
-        if: env.CLASPRC_JSON_FILE != secrets.secrets.CLASPRC_JSON
-        uses: hmanzur/actions-set-secret@v2.0.0
-        with:
-          name: "CLASP_CREDENTIALS"
-          value: ${{ env.CLASPRC_JSON_FILE }}
-          repository: ${{ github.repository }}
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+      - name: Update CLASP_CREDENTIALS secret
+        env:
+          GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+          CLASP_CREDENTIALS_CURRENT: ${{ secrets.CLASP_CREDENTIALS }}
+        run: |
+          if [ "$CLASPRC_JSON_FILE" != "$CLASP_CREDENTIALS_CURRENT" ]; then
+            echo "$CLASPRC_JSON_FILE" | gh secret set CLASP_CREDENTIALS --repo ${{ github.repository }}
+            echo "Updated CLASP_CREDENTIALS secret"
+          else
+            echo "No update needed for CLASP_CREDENTIALS"
+          fi
+          # Clean up sensitive file
+          rm "${HOME}/.clasprc.json"
