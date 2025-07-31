@@ -45,11 +45,11 @@ jobs:
           echo "CLASPRC_JSON_FILE=$(tr -d '\n\r' < ~/.clasprc.json)" >> $GITHUB_ENV     
       
       - name: Update CLASPRC_JSON
-        if: env.CLASPRC_JSON_FILE != ${{ secrets.REPO_ACCESS_TOKEN }}
+        if: env.CLASPRC_JSON_FILE != ${{secrets.REPO_ACCESS_TOKEN }}
         env:
-          GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+          GH_TOKEN: ${{secrets.REPO_ACCESS_TOKEN }}
         run: |
-          echo "${{ env.CLASPRC_JSON_FILE }}" | gh secret set CLASPRC_JSON --repo ${{ github.repository }}
+          echo "${{env.CLASPRC_JSON_FILE }}" | gh secret set CLASPRC_JSON --repo ${{github.repository }}
        
       #RUN CLASP PUSH SCRIPT
       - name: Make clasp_push.sh executable
@@ -57,4 +57,4 @@ jobs:
 
       - name: Run clasp_push.sh
         id: run-clasp-push
-        run: ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
+        run: ./.github/scripts/clasp_push.sh ${{steps.changed-files.outputs.all_changed_files }}
