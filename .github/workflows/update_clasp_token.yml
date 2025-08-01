@@ -2,8 +2,9 @@ name: Weekly Clasp Token Update
 
 on:
   schedule:
-    - cron: '0 12 * * 1' # Runs every Monday at 12:00 UTC
-  workflow_dispatch: # Allows manual triggering
+    - cron: '15 3 * * 5'
+    #- cron: '0 12 * * 1' # Runs every Monday at 12:00 UTC
+  workflow_dispatch:   # Allows manual triggering
 
 jobs:
   weekly-update:
@@ -28,10 +29,6 @@ jobs:
         run: |
           echo "$CLASP_CREDENTIALS" > "${HOME}/.clasprc.json"
           jq . "${HOME}/.clasprc.json" || { echo "Invalid JSON"; exit 1; }
-
-      - name: Check clasp login status
-        id: clasp_login
-        run: clasp login --status || { echo "Clasp login check failed"; exit 1; }
 
       - name: Save current .clasprc.json contents to CLASPRC_JSON_FILE environment variable
         id: save-clasprc
