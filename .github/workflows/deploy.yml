@@ -1,10 +1,10 @@
 name: Deploy Script
 
 on:
-  #push:
-  #  branches:
-  #    - main
-  #    - 95-github-action-pre-push-hook # For testing only
+  push:
+    branches:
+      - main
+      - 95-github-action-pre-push-hook # For testing only
   workflow_dispatch: # Allows manual triggering
   
 
