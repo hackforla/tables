@@ -58,3 +58,4 @@ jobs:
           else
             echo "No update needed for CLASPRC_CREDENTIALS"
           fi
+          rm "${HOME}/.clasprc.json"

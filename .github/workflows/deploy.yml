@@ -75,5 +75,5 @@ jobs:
           else
             ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
           fi
-        run: rm "${HOME}/.clasprc.json"
+          rm "${HOME}/.clasprc.json"
 
