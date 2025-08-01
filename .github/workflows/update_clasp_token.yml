@@ -2,8 +2,12 @@ name: Weekly Clasp Token Update
 
 on:
   schedule:
-    - cron: '0 0 * * 1' # Runs every Monday at 00:00 UTC
-  workflow_dispatch: # Allows manual triggering for immediate testing
+    - cron: '0 12 * * 1' # Runs every Monday at 12:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
 
 jobs:
   weekly-update:
@@ -24,7 +28,7 @@ jobs:
 
       - name: Write CLASP_CREDENTIALS secret to .clasprc.json file
         run: |
-          echo "${{ secrets.secrets.CLASPRC_JSON }}" > "${HOME}/.clasprc.json"
+          echo "${{ secrets.CLASPRC_JSON }}" > "${HOME}/.clasprc.json"
           # Verify the file is valid JSON
           jq . "${HOME}/.clasprc.json" || { echo "Invalid .clasprc.json"; exit 1; }
 
@@ -40,7 +44,7 @@ jobs:
 
       - name: Save CLASPRC_JSON_FILE to CLASP_CREDENTIALS repo secret
         id: set-clasprc-secret
-        if: env.CLASPRC_JSON_FILE != secrets.secrets.CLASPRC_JSON
+        if: env.CLASPRC_JSON_FILE != secrets.CLASPRC_JSON
         uses: hmanzur/actions-set-secret@v2.0.0
         with:
           name: "CLASP_CREDENTIALS"
