@@ -65,9 +65,5 @@ jobs:
 
       - name: Run clasp_push.sh
         run: |
-          if [ -z "${{ steps.changed-files.outputs.all_changed_files }}" ]; then
-            echo "No changes to push."
-          else
-            ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
-          fi
-          rm "${HOME}/.clasprc.json"
+        ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
+        rm "${HOME}/.clasprc.json"
