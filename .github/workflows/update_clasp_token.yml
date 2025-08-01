@@ -2,7 +2,7 @@ name: Weekly Clasp Token Update
 
 on:
   schedule:
-    - cron: '15 3 * * 5'
+    - cron: '23 3 * * 5'
     #- cron: '0 12 * * 1' # Runs every Monday at 12:00 UTC
   workflow_dispatch:   # Allows manual triggering
 
