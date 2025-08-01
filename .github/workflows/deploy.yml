@@ -7,10 +7,6 @@ on:
       - 95-github-action-pre-push-hook # For testing only
   workflow_dispatch:
 
-permissions:
-  contents: read
-  actions: read
-
 jobs:
   clasp-push:
     runs-on: ubuntu-latest

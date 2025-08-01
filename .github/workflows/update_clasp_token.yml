@@ -5,11 +5,6 @@ on:
     - cron: '0 12 * * 1' # Runs every Monday at 12:00 UTC
   workflow_dispatch: # Allows manual triggering
 
-# Restrict GITHUB_TOKEN permissions
-permissions:
-  contents: read
-  actions: read
-
 jobs:
   weekly-update:
     runs-on: ubuntu-latest
