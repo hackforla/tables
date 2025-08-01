@@ -64,6 +64,6 @@ jobs:
         run: chmod +x ./.github/scripts/clasp_push.sh
 
       - name: Run clasp_push.sh
-        run: |
-        ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
-        rm "${HOME}/.clasprc.json"
+        run: 
+          ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
+          rm "${HOME}/.clasprc.json"
