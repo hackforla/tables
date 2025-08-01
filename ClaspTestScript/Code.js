@@ -13,6 +13,7 @@ function Run() {
     Logger.log("Test 33333333333 7/31/2025")
     Logger.log("Test 2222222 7/31/2025")
     Logger.log("Test 1111111 7/31/2025")
+    Logger.log("Test 00000000000000 7/31/2025")
     webinars = listAllWebinars();//call zoom API to list all webinars
     Logger.log("-----------output1------------All Webinars ")
     Logger.log(webinars); // Log the meetings or process them accordingly
