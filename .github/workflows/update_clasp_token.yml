@@ -44,7 +44,7 @@ jobs:
 
       - name: Save CLASPRC_JSON_FILE to CLASP_CREDENTIALS repo secret
         id: set-clasprc-secret
-        if: env.CLASPRC_JSON_FILE != secrets.CLASPRC_JSON
+        if: env.CLASPRC_JSON_FILE != ${{secrets.CLASPRC_JSON}}
         uses: hmanzur/actions-set-secret@v2.0.0
         with:
           name: "CLASP_CREDENTIALS"
