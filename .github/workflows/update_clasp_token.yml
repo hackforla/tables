@@ -2,8 +2,11 @@ name: Weekly Clasp Token Update
 
 on:
   schedule:
-    - cron: '23 3 * * 5'
-    #- cron: '0 12 * * 1' # Runs every Monday at 12:00 UTC
+    - cron: '0 12 * * 1' # Runs every Monday at 12:00 UTC
+  push:
+    branches:
+      - main
+      - 95-github-action-pre-push-hook # For testing only
   workflow_dispatch:   # Allows manual triggering
 
 jobs:
