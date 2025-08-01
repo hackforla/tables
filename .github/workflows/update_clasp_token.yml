@@ -30,7 +30,7 @@ jobs:
         env:
           CLASP_CREDENTIALS: ${{ secrets.CLASPRC_JSON }}
         run: |
-          echo ::add-mask:: "$CLASP_CREDENTIALS" > "${HOME}/.clasprc.json"
+          echo "$CLASP_CREDENTIALS" > "${HOME}/.clasprc.json"
           jq . "${HOME}/.clasprc.json" || { echo "Invalid JSON"; exit 1; }
 
       - name: Save current .clasprc.json contents to CLASPRC_JSON_FILE environment variable
