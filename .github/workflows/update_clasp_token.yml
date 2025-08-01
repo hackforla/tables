@@ -27,13 +27,13 @@ jobs:
       - name: Install clasp
         run: npm install -g @google/clasp
 
-      - name: Write CLASP_CREDENTIALS secret to .clasprc.json file
+      - name: Write CLASP_CREDENTIALS secret to .clasprc.json
+        env:
+          CLASP_CREDENTIALS: ${{ secrets.CLASPRC_JSON }}
         run: |
-          echo "${{ secrets.CLASPRC_JSON }}" > "${HOME}/.clasprc.json"
-          # Verify the file is valid JSON
-          jq . "${HOME}/.clasprc.json" || { echo "Invalid JSON in .clasprc.json"; exit 1; }
-          # Overwrite file to minimize exposure
-          echo "{}" > "${HOME}/.clasprc.json
+          echo "$CLASP_CREDENTIALS" > "${HOME}/.clasprc.json"
+          jq . "${HOME}/.clasprc.json" || { echo "Invalid JSON"; exit 1; }
+          echo "{}" > "${HOME}/.clasprc.json"
 
       - name: Check clasp login status
         id: clasp_login
@@ -42,19 +42,19 @@ jobs:
       - name: Save current .clasprc.json contents to CLASPRC_JSON_FILE environment variable
         id: save-clasprc
         run: |
-          echo ::add-mask::$(tr -d '\n\r' < ~/.clasprc.json)
-          echo "CLASPRC_JSON_FILE=$(tr -d '\n\r' < ~/.clasprc.json)" >> $GITHUB_ENV     
+          CLASPRC_JSON_CONTENT=$(jq -c . "${HOME}/.clasprc.json")
+          echo ::add-mask::"$CLASPRC_JSON_CONTENT"
+          echo "CLASPRC_JSON_FILE=$CLASPRC_JSON_CONTENT" >> $GITHUB_ENV     
 
-      - name: Update CLASP_CREDENTIALS secret
+      - name: Update CLASPRC_JSON
         env:
           GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
-          CLASP_CREDENTIALS_CURRENT: ${{ secrets.CLASP_CREDENTIALS }}
+          CLASP_CREDENTIALS_CURRENT: ${{ secrets.CLASPRC_JSON }}
+
         run: |
           if [ "$CLASPRC_JSON_FILE" != "$CLASP_CREDENTIALS_CURRENT" ]; then
-            echo "$CLASPRC_JSON_FILE" | gh secret set CLASP_CREDENTIALS --repo ${{ github.repository }}
-            echo "Updated CLASP_CREDENTIALS secret"
+            echo "$CLASPRC_JSON_FILE" | gh secret set CLASPRC_JSON --repo ${{ github.repository }}
+            echo "Updated CLASPRC_JSON secret"
           else
-            echo "No update needed for CLASP_CREDENTIALS"
+            echo "No update needed for CLASPRC_CREDENTIALS"
           fi
-          # Clean up sensitive file
-          rm "${HOME}/.clasprc.json"
