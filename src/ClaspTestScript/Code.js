@@ -7,4 +7,5 @@ function Run() {
     Logger.log("Hello world");
     Logger.log("goodbye world");
     Logger.log("Test");
+    Logger.log("Test2");
   }
