@@ -6,4 +6,5 @@ const ZOOM_USER_ID = getScriptSecret("ZOOM_USER_ID");
 function Run() {
     Logger.log("Hello world");
     Logger.log("goodbye world");
+    Logger.log("Test");
   }
