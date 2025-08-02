@@ -30,7 +30,10 @@ jobs:
           # Ensure the JSON is valid without printing it in the logs
           jq . "${HOME}/.clasprc.json" > /dev/null || { echo "Invalid JSON"; exit 1; }
 
-
+      - name: Update clasp credential with clasp list
+        id: clasp_list
+        run: clasp list || { echo "Clasp can't use current credential"; exit 1; }
+        
       - name: Save current .clasprc.json contents to CLASPRC_JSON_FILE environment variable
         id: save-clasprc
         run: |
