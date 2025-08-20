@@ -35,7 +35,7 @@ jobs:
 
       #UPDATE CLASP TOKEN
       - name: Update clasp credential with clasp list
-        id: clasp_list
+        id: clasp-list
         run: clasp list || { echo "Clasp can't use current credential"; exit 1; }
 
       - name: Save current .clasprc.json contents to CLASPRC_JSON_FILE environment variable

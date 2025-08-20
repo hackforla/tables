@@ -6,7 +6,7 @@ export LANG=C.UTF-8
 # Returns 0 if the directory contains changes, 1 otherwise
 function contains_changes() {
   # If no changed files are provided, assume no changes
-  [[ "${*:2}" = "" ]] && return 0
+  [[ "${*:2}" = "" ]] && return 1
   for f in "${@:2}"; do
     case $(realpath "$f")/ in 
       $(realpath "$1")/*) return 0;;
