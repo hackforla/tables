@@ -1,0 +1,56 @@
+name: Weekly Clasp Token Update
+
+on:
+  schedule:
+    - cron: '0 12 * * 1' # Runs every Monday at 12:00 UTC
+  workflow_dispatch:   # Allows manual triggering
+
+jobs:
+  weekly-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        # Removed 'ref' to checkout the triggering branch (e.g., main or 95-github-action-pre-push-hook)
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+      - name: Install clasp
+        run: npm install -g @google/clasp
+
+      - name: Write CLASP_CREDENTIALS secret to .clasprc.json
+        env:
+          CLASP_CREDENTIALS: ${{ secrets.CLASPRC_JSON }}
+        run: |
+          echo "$CLASP_CREDENTIALS" > "${HOME}/.clasprc.json"
+          # Ensure the JSON is valid without printing it in the logs
+          jq . "${HOME}/.clasprc.json" > /dev/null || { echo "Invalid JSON"; exit 1; }
+
+      - name: Update clasp credential with clasp list
+        id: clasp_list
+        run: clasp list || { echo "Clasp can't use current credential"; exit 1; }
+        
+      - name: Save current .clasprc.json contents to CLASPRC_JSON_FILE environment variable
+        id: save-clasprc
+        run: |
+          CLASPRC_JSON_CONTENT=$(jq -c . "${HOME}/.clasprc.json")
+          echo ::add-mask::"$CLASPRC_JSON_CONTENT"
+          echo "CLASPRC_JSON_FILE=$CLASPRC_JSON_CONTENT" >> $GITHUB_ENV     
+
+      - name: Update CLASPRC_JSON
+        env:
+          GH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+          CLASP_CREDENTIALS_CURRENT: ${{ secrets.CLASPRC_JSON }}
+
+        run: |
+          if [ "$CLASPRC_JSON_FILE" != "$CLASP_CREDENTIALS_CURRENT" ]; then
+            echo "$CLASPRC_JSON_FILE" | gh secret set CLASPRC_JSON --repo ${{ github.repository }}
+            echo "Updated CLASPRC_JSON secret"
+          else
+            echo "No update needed for CLASPRC_CREDENTIALS"
+          fi
+          rm "${HOME}/.clasprc.json"
