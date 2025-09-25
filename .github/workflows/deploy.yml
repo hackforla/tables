@@ -15,16 +15,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: main # Ensure the correct branch is checked out 
+          ref: main # Ensure the correct branch is checked out
+
+      - name: Get changed files
+        id: changed-files
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            src:
+              - 'src/**'
+
+      - name: Debug changed files
+        run: echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install clasp
         id: install-clasp
-        run: sudo npm install @google/clasp -g
+        run: npm install @google/clasp -g
 
       - name: Write CLASP_CREDENTIALS secret to .clasprc.json
         env:
