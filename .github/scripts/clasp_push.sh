@@ -11,11 +11,12 @@ function contains_changes() {
   shift
   echo "Checking for changed files in $dir: $@"
   [[ "$*" == "" ]] && { echo "No changed files provided, skipping $dir"; return 1; }
-  dir_absolute=$(realpath "$dir" 2>/dev/null || pwd)
+  dir_absolute=$(realpath "$dir" 2>/dev/null || echo "$dir")
+  dir_absolute="${dir_absolute%/}/"
   for f in "$@"; do
-    file_absolute=$(realpath "$f" 2>/dev/null || echo "$f")
+    file_absolute=$(realpath "$f" 2>/dev/null || echo "$(pwd)/$f")
     echo "Comparing $file_absolute against $dir_absolute"
-    if [[ "$file_absolute" == "$dir_absolute"/* ]]; then
+    if [[ "$file_absolute" == "$dir_absolute"* ]]; then
       echo "Found changed file $f in $dir"
       return 0
     fi
