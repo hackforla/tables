@@ -23,10 +23,11 @@ jobs:
         with:
           filters: |
             src:
-              - 'src/**'
+              - src/**
 
       - name: Debug changed files
-        run: echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+        run: |
+        echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
