@@ -9,33 +9,36 @@ export LANG=C.UTF-8
 function contains_changes() {
   local dir="$1"
   shift
-  [[ "$*" == "" ]] && { echo "No changed files provided, skipping $dir"; return 1; }
+  [[ "$*" == "" ]] && return 1
   dir_absolute=$(realpath "$dir" 2>/dev/null || echo "$dir")
   dir_absolute="${dir_absolute%/}/"
   for f in "$@"; do
-    file_absolute=$(realpath "$f" 2>/dev/null || echo "$(pwd)/$f")
+    file_absolute=$(realpath "$f" 2>/dev/null || echo "$root_dir/$f")
     if [[ "$file_absolute" == "$dir_absolute"* ]]; then
       echo "Found changed file $f in $dir"
       return 0
     fi
   done
-  echo "No changed files in $dir"
   return 1
 }
 
 # Ensure working directory is the repository root
-cd "$GITHUB_WORKSPACE" || { echo "Failed to set working directory to $GITHUB_WORKSPACE"; exit 1; }
+cd "$GITHUB_WORKSPACE" || exit 1
+root_dir=$(pwd)
 
 if [ $# -eq 0 ]; then
-  echo "No input files provided, exiting"
   exit 0
+fi
+
+# Filter changed files to only include src/ directories
+changed_files=""
+if [ $# -gt 0 ]; then
+  changed_files=$(echo "$@" | xargs -n1 | grep '^src/' | xargs -n1 realpath 2>/dev/null | xargs -I {} dirname {} | sort -u || true)
 fi
 
 # Find all directories containing .clasp.json files
 dirs=()
-if ! find_output=$(find . -name '.clasp.json' -exec dirname {} \; | sort -u | xargs realpath 2>/dev/null); then
-  echo "Warning: find command failed or no .clasp.json files found"
-else
+if find_output=$(find . -name '.clasp.json' -exec dirname {} \; | sort -u | xargs realpath 2>/dev/null); then
   IFS=$'\n' read -r -d '' -a dirs <<< "$find_output" || true
 fi
 
@@ -44,10 +47,9 @@ exit_code=0
 # Process each Clasp project directory
 for dir in "${dirs[@]}"; do
   if [ ! -d "$dir" ]; then
-    echo "Directory $dir does not exist, skipping"
     continue
   fi
-  pushd "$dir" > /dev/null || { echo "Failed to enter $dir"; exit_code=1; continue; }
+  pushd "$dir" > /dev/null || { exit_code=1; continue; }
   if ! contains_changes "$dir" "$@"; then
     popd > /dev/null
     continue
