@@ -9,6 +9,6 @@ function Run() {
     Logger.log("Test");
     Logger.log("Test4");
     Logger.log("9/25");
-    Logger.log("9/25-1");
+    
     
   }
