@@ -77,6 +77,10 @@ jobs:
       - name: Make clasp_push.sh executable
         run: chmod +x ./.github/scripts/clasp_push.sh
 
+      - name: Debug clasp_push.sh input
+        run: |
+          echo "Running clasp_push.sh with args: ${{ steps.changed-files.outputs.all_changed_files }}"
+
       - name: Run clasp_push.sh
         run: |
           ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
