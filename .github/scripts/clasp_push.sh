@@ -26,7 +26,6 @@ function contains_changes() {
 cd "$GITHUB_WORKSPACE" || exit 1
 root_dir=$(pwd)
 
-
 # Get changed files
 changed_files=""
 if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
@@ -35,6 +34,7 @@ else
   changed_files=$(git diff --name-only origin/main | grep '^src/' | tr '\n' ' ' || true)
 fi
 if [[ -z "$changed_files" ]]; then
+  echo "No changes found in src/, exiting"
   exit 0
 fi
 
@@ -52,7 +52,7 @@ for dir in "${dirs[@]}"; do
     continue
   fi
   pushd "$dir" > /dev/null || { exit_code=1; continue; }
-  if ! contains_changes "$dir" "$@"; then
+  if ! contains_changes "$dir" $changed_files; then
     popd > /dev/null
     continue
   fi
