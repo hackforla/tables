@@ -26,14 +26,16 @@ function contains_changes() {
 cd "$GITHUB_WORKSPACE" || exit 1
 root_dir=$(pwd)
 
-if [ $# -eq 0 ]; then
-  exit 0
-fi
 
-# Filter changed files to only include src/ directories
+# Get changed files
 changed_files=""
-if [ $# -gt 0 ]; then
-  changed_files=$(echo "$@" | xargs -n1 | grep '^src/' | xargs -n1 realpath 2>/dev/null | xargs -I {} dirname {} | sort -u || true)
+if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+  changed_files=$(git diff --name-only HEAD~1 | grep '^src/' | tr '\n' ' ' || true)
+else
+  changed_files=$(git diff --name-only origin/main | grep '^src/' | tr '\n' ' ' || true)
+fi
+if [[ -z "$changed_files" ]]; then
+  exit 0
 fi
 
 # Find all directories containing .clasp.json files
