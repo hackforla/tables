@@ -36,12 +36,20 @@ if [ $# -eq 0 ]; then
   exit 0
 fi
 
-# Convert changed files to unique directories
-changed_files=$(echo "$@" | xargs -n1 realpath 2>/dev/null | xargs -I {} dirname {} | sort -u || true)
-echo "Changed directories: $changed_files"
+# Filter changed files to only include src/ directories
+changed_files=""
+if [ $# -gt 0 ]; then
+  changed_files=$(echo "$@" | xargs -n1 | grep '^src/' | xargs -n1 realpath 2>/dev/null | xargs -I {} dirname {} | sort -u || true)
+fi
+echo "Changed directories (filtered to src/): $changed_files"
 
 # Find all directories containing .clasp.json files
-IFS=$'\n' read -r -d '' -a dirs < <(find . -name '.clasp.json' -exec dirname {} \; | sort -u | xargs realpath 2>/dev/null || true)
+dirs=()
+if ! find_output=$(find . -name '.clasp.json' -exec dirname {} \; | sort -u | xargs realpath 2>/dev/null); then
+  echo "Warning: find command failed or no .clasp.json files found"
+else
+  IFS=$'\n' read -r -d '' -a dirs <<< "$find_output" || true
+fi
 echo "Clasp project directories: ${dirs[@]}"
 
 exit_code=0
@@ -49,7 +57,11 @@ exit_code=0
 # Process each Clasp project directory
 for dir in "${dirs[@]}"; do
   echo "Processing directory: $dir"
-  pushd "$dir" > /dev/null || { echo "Failed to enter $dir"; exit 1; }
+  if [ ! -d "$dir" ]; then
+    echo "Directory $dir does not exist, skipping"
+    continue
+  fi
+  pushd "$dir" > /dev/null || { echo "Failed to enter $dir"; exit_code=1; continue; }
   if ! contains_changes "$dir" "$@"; then
     popd > /dev/null
     continue
