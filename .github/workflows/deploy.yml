@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main # Ensure the correct branch is checked out
-          fetch-depth: 0  # Fetch full history to enable git diff
+          fetch-depth: 0  # Fetch full history to enable git diff in clasp_push.sh
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -63,21 +63,7 @@ jobs:
       - name: Make clasp_push.sh executable
         run: chmod +x ./.github/scripts/clasp_push.sh
         
-      - name: Get changed files
-        id: changed-files
-        run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            CHANGED_FILES=$(git diff --name-only HEAD~1 | tr '\n' ' ' || true)
-          else
-            CHANGED_FILES=$(git diff --name-only origin/main | tr '\n' ' ' || true)
-          fi
-          echo "all_changed_files=$CHANGED_FILES" >> $GITHUB_OUTPUT
-
-      - name: Check clasp_push.sh input
-        run: |
-          echo "Running clasp_push.sh with args: ${{ steps.changed-files.outputs.all_changed_files }}"
-
       - name: Run clasp_push.sh
         run: |
-          ./.github/scripts/clasp_push.sh ${{ steps.changed-files.outputs.all_changed_files }}
+          ./.github/scripts/clasp_push.sh 
           rm "${HOME}/.clasprc.json"
