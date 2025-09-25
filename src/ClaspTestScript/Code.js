@@ -8,4 +8,5 @@ function Run() {
     Logger.log("goodbye world");
     Logger.log("Test");
     Logger.log("Test4");
+    Logger.log("9/25");
   }
