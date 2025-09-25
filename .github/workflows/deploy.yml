@@ -22,16 +22,11 @@ jobs:
         id: changed-files
         run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
-            # For push to main: diff against previous commit
-            echo "all_changed_files<<EOF" >> $GITHUB_OUTPUT
-            git diff --name-only HEAD~1 || true
-            echo "EOF" >> $GITHUB_OUTPUT
+            CHANGED_FILES=$(git diff --name-only HEAD~1 | tr '\n' ' ' || true)
           else
-            # For workflow_dispatch or other: diff against main (or use empty for full push)
-            echo "all_changed_files<<EOF" >> $GITHUB_OUTPUT
-            git diff --name-only origin/main || true
-            echo "EOF" >> $GITHUB_OUTPUT
+            CHANGED_FILES=$(git diff --name-only origin/main | tr '\n' ' ' || true)
           fi
+          echo "all_changed_files=$CHANGED_FILES" >> $GITHUB_OUTPUT
 
       - name: Debug changed files
         run: |
