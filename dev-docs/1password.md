@@ -8,7 +8,7 @@ This account is the main account that holds the Goolge Tables project as well as
 
 ## hackforla-onboarding GitHub account
 
-You will find the login information for the GitHub account used for onboarding automations for GitHub. This account has ownership of Hack for LA’s GitHub organization so all actions needed for the org can be done with this account.
+This account has ownership of Hack for LA’s GitHub organization so all automated actions needed for the org can be done with this account.
 
 ## hackforla-onboarding GitHub token for app scripts
 
@@ -44,7 +44,7 @@ This token provides API access for the Hack for LA Zoom integration. It should b
 
 ## Zoom4@civictechstructure.org Zoom account
 
-This is a sub-account under the main Zoom master account that currently holds and manages onboarding events for HFLA.
+This is a sub-account under the main Zoom master account that currently holds and manages onboarding events for HFLA. This is the only Zoom account that has webinar package.
 
 ## Zoom4@civictechstructure.org gmail account
 
