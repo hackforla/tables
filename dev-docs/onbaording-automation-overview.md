@@ -80,7 +80,6 @@ For detailed implementation, see [general-onboarding.md](general-onboarding.md) 
 | `bots.gs`               | Triggers automation on spreadsheet changes |
 | `utilities.gs`           | Provides shared utilities            |
 | `config.gs`             | Centralizes configuration            |
-
 | `main.gs`               | Schedules triggers (HFLAOnboardingTimeTrigger) |
 | `GoogleFormOnOff.gs`    | Toggles Google Forms                 |
 | `ZoomAttendeeReport.gs` | Generates Zoom attendee reports      |
