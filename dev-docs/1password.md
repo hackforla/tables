@@ -29,3 +29,26 @@ This account was used as a test volunteer when testing the onboarding process au
 ## tablesuser01@gmail.com account
 
 This account was used as a test volunteer when testing the onboarding process automations. Feel free to use this account as well to test onboarding automations.
+
+## zoom@civictechstructure.org Zoom account
+
+This is the Zoom master account for HFLA and serves as the admin account for managing Zoom-related operations, including sub-accounts and API integrations.
+
+## zoom@civictechstructure.org gmail account
+
+This Gmail account is required as 2FA (two-factor authentication) to log in to the zoom@civictechstructure.org Zoom account.
+
+## Hack for LA Zoom API
+
+This token provides API access for the Hack for LA Zoom integration. It should be used in conjunction with the [Zoom API reference](https://github.com/hackforla/tables/blob/main/dev-docs/zoom-api.md) for making API calls, such as retrieving meeting details, participants, and registrants.
+
+## Zoom4@civictechstructure.org Zoom account
+
+This is a sub-account under the main Zoom master account that currently holds and manages onboarding events for HFLA.
+
+## Zoom4@civictechstructure.org gmail account
+
+This Gmail account is required as 2FA (two-factor authentication) to log in to the Zoom4@civictechstructure.org Zoom account.
+
+
+
