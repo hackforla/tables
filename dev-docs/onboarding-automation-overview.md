@@ -5,7 +5,7 @@ The onboarding automation is a system built with Google Apps Script (GAS) to str
 
 There are two primary tasks:
 1. **General Onboarding**: Automates onboarding for new volunteers attending onboarding events. See [general-onboarding.md](general-onboarding.md) for details.
-2. **Project On/Off-boarding**: Manages onboarding and offboarding for specific projects, designed for internal use by project managers and integrated with the VRMS system. See [project-on-off-boarding.md](project-on-off-boarding.md) for details.
+2. **Project On/Off-boarding**: Manages onboarding and offboarding for specific projects, designed for internal use by project managers and integrated with the VRMS system. See [project-onboarding-offboarding.md](project-onboarding-offboarding.md) for details.
 
 ### Key Components
 - [**Database**](https://docs.google.com/spreadsheets/d/15ByO77F032kr5xBiX_xJw3BXz8Yd1A-gDUASyI9mAiw/edit?gid=992054610#gid=992054610): The "HFLA Volunteers" spreadsheet is the core database, with sheets like "Volunteers" (member data), "Projects" (project metadata), "Onboarding - Schedule" (event times), and "CoP" (Community of Practice details).
@@ -24,8 +24,8 @@ The codebase is stored in the shared Tables Google Drive and hosted on Google Cl
   - [**HFLAOnboardingTimeTrigger**](https://script.google.com/home/projects/1uNXw1yX6g1O5wH7xFOqpA89yrD6EGx1c8tgRTRnQZvVeoP1NIbz9v_yr/edit)
 - **Main Spreadsheet**: - [**HFLA Volunteers**](https://docs.google.com/spreadsheets/d/15ByO77F032kr5xBiX_xJw3BXz8Yd1A-gDUASyI9mAiw/edit?gid=992054610#gid=992054610) : Centralized database for HFLA
 - **Forms**:
-  - [**HFLA Onboarding form**] (https://docs.google.com/forms/d/1vZZQC9PX-F4wmORhM4X7ZtfFhj7v1qDRRUZPwKIrMLk/edit) : General onboarding 
-  - [**HFLA Website Team Onboarding form**] (https://docs.google.com/forms/d/1nFiL45x2AG3mxebCAvoVeW_MdkSKrHja4Q_fOKRhgZk/edit) : Website team onboarding
+  - [**HFLA Onboarding form**](https://docs.google.com/forms/d/1vZZQC9PX-F4wmORhM4X7ZtfFhj7v1qDRRUZPwKIrMLk/edit) : General onboarding 
+  - [**HFLA Website Team Onboarding form**](https://docs.google.com/forms/d/1nFiL45x2AG3mxebCAvoVeW_MdkSKrHja4Q_fOKRhgZk/edit) : Website team onboarding
   - [**Project Onboarding Form**](https://docs.google.com/forms/d/1BIbCc-KiWNBTpR8NGchaGD5k81z0tPqUtNxK4_lL_90/edit) : Role-based project onboarding
   - [**Project Offboarding Form**](https://docs.google.com/forms/d/1y5ikJ_HceunH7VtQa66WvRgFNAQUugXC5WXJohrGmQo/edit) : Project offboarding
 - **Zoom Reports**:  - [**Part1_onboarding_zoom_attendee_report**](https://docs.google.com/spreadsheets/d/1zYfTMyr0Yospj5hLjz0ZdX93llJ8Zy-JF_9k-cPUuW0/edit?gid=1375213426) : Attendee report for part 1 onboarding event
@@ -40,16 +40,16 @@ The system processes data from:
 - **Zoom API**: Webinar IDs, attendee data (email, join/leave time, duration).
 - **Spreadsheet Edits**: 
    - **Volunteers Sheet**: Triggers on monitored columns for manual onboarding or updates:
-    - `attn-verified`: Checkbox for manual attendance override.
-    - `Enter Passphrase`: Validates passphrase (`strawberry`).
-    - `name_first`, `name_last`: Volunteer identity.
-    - `preferred_email`, `Gmail`, `zoom_email`: Email for Drive/Zoom access.
-    - `github_handle`: GitHub team membership.
-    - `cop_name`, `conduct`, `linkedin`: CoP and compliance data.
+      - `attn-verified`: Checkbox for manual attendance override.
+      - `Enter Passphrase`: Validates passphrase (`strawberry`).
+      - `name_first`, `name_last`: Volunteer identity.
+      - `preferred_email`, `Gmail`, `zoom_email`: Email for Drive/Zoom access.
+      - `github_handle`: GitHub team membership.
+      - `cop_name`, `conduct`, `linkedin`: CoP and compliance data.
   - **Onboarding - Schedule Sheet**: Triggers on schedule changes:
-    - `date`: Meeting date.
-    - `on`: Event start time.
-    - `off`: Event end time.
+      - `date`: Meeting date.
+      - `on`: Event start time.
+      - `off`: Event end time.
 
 ## Usage Instructions
 1. **General Onboarding**:
@@ -74,7 +74,7 @@ The system, built in GAS, uses a modular architecture:
 - **Integrations**: Zoom API (with retry for errors like code 3001), GitHub API (`admin:org` scope), Google Drive, and Google Forms.
 - **Configuration**: `config.gs` stores IDs/settings; `utilities.gs` provides shared functions (e.g., `getGithubRequest`, `isValidEmail`...).
 
-For details, see [general-onboarding.md](general-onboarding.md) and [project-on-off-boarding.md](project-on-off-boarding.md).
+For details, see [general-onboarding.md](general-onboarding.md) and [project-onboarding-offboarding.md](project-onboarding-offboarding.md).
 
 ### Script Overview
 | Script Project               | Script File             | Purpose                              |
