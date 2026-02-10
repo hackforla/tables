@@ -261,7 +261,6 @@ Due to evolving requirements and rapid feature development, planned improvements
 - **Enhanced Testing**: Integrate a unit test framework (e.g., GasT, QUnit) into the GitHub Actions workflow. Run tests before deployment to catch regressions. See [Issue #93](https://github.com/hackforla/tables/issues/93) for the testing discussion.
 - **Error Notifications**: Implement Slack or email alerts for failed workflow runs.
 - **Merge Conflict Mitigation**: Develop scripts for diff-based conflict detection and automated reviewer assignment for overlapping PRs.
-- **Node.js Version Consistency**: Unify Node.js versions across workflows (`deploy.yml` currently uses Node 20, `update_clasp_token.yml` uses Node 16 which is EOL).
 - **Staging Environment**: Create a mirrored GCP project with duplicate Apps Script instances for safe testing before production deployment.
 
 ## Resources for New Contributors
