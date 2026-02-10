@@ -16,8 +16,13 @@ There are two primary workflows:
 ### Key Components
 
 - **Repository**: The [hackforla/tables](https://github.com/hackforla/tables) GitHub repository hosts the codebase, with `.github/workflows/` (workflow definitions) and `.github/scripts/` (supporting bash scripts).
-- **Triggers**: GitHub events (e.g., push to `main`) trigger deployments; scheduled cron jobs handle token updates.
-- **Automation Features**: Detects changed files via Git diffs, pushes only affected projects, refreshes Clasp OAuth tokens, and updates GitHub secrets programmatically.
+- **Triggers**: 
+  - GitHub events (e.g., push to `main`) trigger deployments
+  - scheduled cron jobs handle token updates.
+- **Automation Features**: 
+  - Detects changed files via Git diffs
+  - Pushes only affected projects
+  - refreshes Clasp OAuth tokens, and updates GitHub secrets programmatically.
 
 ## Why Clasp with GitHub Actions?
 
@@ -136,8 +141,6 @@ The system, built with GitHub Actions and bash scripting, uses a modular archite
 - **Integrations**: GitHub API (for secret updates via `gh`), Clasp (for GAS pushes), Node.js (runtime for Clasp).
 - **Configuration**: GitHub Secrets store credentials; environment variables enable dynamic token updates within workflows.
 
-For details, see the workflow YAML files and [CONTRIBUTING.md](CONTRIBUTING.md).
-
 ### Script Overview
 
 | Workflow/Script | File | Purpose |
@@ -235,7 +238,7 @@ Script versions are tracked in the [hackforla/tables](https://github.com/hackfor
 
 | Problem | Solution |
 |---|---|
-| Clasp authentication fails (`"Clasp can't use current credential"`) | Check `CLASPRC_JSON` secret for validity. Run `clasp login` locally and update the secret. |
+| Clasp authentication fails (`"Clasp can't use current credential"`) | Check `CLASPRC_JSON` secret for validity. Run `clasp login` locally and update the secret in Settings > Secrets and variables > Actions. |
 | No changes detected | Ensure changes are in `src/` directory and Git history is fetched correctly (`fetch-depth: 0`). |
 | Secret update fails | Verify `REPO_ACCESS_TOKEN` has `repo` scope and hasn't expired. |
 | JSON validation errors | Ensure `CLASPRC_JSON` is properly formatted. Test locally with `jq . ~/.clasprc.json`. |
@@ -259,15 +262,12 @@ Due to evolving requirements and rapid feature development, planned improvements
 - **Error Notifications**: Implement Slack or email alerts for failed workflow runs.
 - **Merge Conflict Mitigation**: Develop scripts for diff-based conflict detection and automated reviewer assignment for overlapping PRs.
 - **Node.js Version Consistency**: Unify Node.js versions across workflows (`deploy.yml` currently uses Node 20, `update_clasp_token.yml` uses Node 16 which is EOL).
-- **Improved Diff Detection**: Replace `HEAD~1` diff with `${{ github.event.before }}..${{ github.event.after }}` for more reliable change detection on squash merges.
 - **Staging Environment**: Create a mirrored GCP project with duplicate Apps Script instances for safe testing before production deployment.
-- **Long-Term Migration**: Evaluate Cloudflare Workers or AWS Lambdas for concurrency-heavy tasks that exceed Apps Script's capabilities.
 
 ## Resources for New Contributors
 
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Clasp Setup Guide](https://github.com/google/clasp)
-- [Google Apps Script Documentation](https://developers.google.com/apps-script)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [GitHub Security Hardening for Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
 - [Issue #93: CI/CD and Version Control Options](https://github.com/hackforla/tables/issues/93)
