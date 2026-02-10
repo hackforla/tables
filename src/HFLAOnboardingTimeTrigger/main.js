@@ -5,6 +5,16 @@
 /**
  * Sets up triggers for onboarding meetings, including a weekly update and the next three meetings.
  */
+
+function testScriptAppAuth() {
+  try {
+    var triggers = ScriptApp.getProjectTriggers();
+    Logger.log('Triggers: ' + triggers.length);
+  } catch (e) {
+    Logger.log('Error: ' + e.message);
+  }
+}
+
 function setTrigger() {
   try {
     deleteAllTriggers();// Clear old triggers
