@@ -1,0 +1,306 @@
+# CI/CD Workflow Overview
+
+## What is the CI/CD Workflow?
+
+The CI/CD workflow is a system built with GitHub Actions to automate the deployment and maintenance of Google Apps Script (GAS) projects for Hack for LA's onboarding automation. It integrates GitHub (code repository), Google Apps Script (deployment target), and Clasp (CLI tool for GAS management). The workflow automates pushing code changes to Google Apps Script deployments, handles token refreshes for authentication, and ensures only relevant projects are updated based on changed files.
+
+The setup assumes multiple Google Apps Script projects organized in subdirectories under `src/`, each with its own `.clasp.json` configuration file. Changes are detected via Git diffs, and deployments are triggered on pushes to the `main` branch or manually.
+
+There are two primary workflows:
+
+- **Deploy Script**: Automates deployment on code pushes to `main` or manual triggers. See `deploy.yml` for details.
+- **Weekly Clasp Token Update**: Manages token refreshes to prevent authentication failures. See `update_clasp_token.yml` for details.
+
+### Key Components
+
+- **Repository**: The [hackforla/tables](https://github.com/hackforla/tables) GitHub repository hosts the codebase, with `.github/workflows/` (workflow definitions) and `.github/scripts/` (supporting bash scripts).
+- **Triggers**: GitHub events (e.g., push to `main`) trigger deployments; scheduled cron jobs handle token updates.
+- **Automation Features**: Detects changed files via Git diffs, pushes only affected projects, refreshes Clasp OAuth tokens, and updates GitHub secrets programmatically.
+
+### Related Projects
+
+- **HFLAOnboardingAutomation**: Core onboarding/offboarding automation scripts (deployment target).
+- **HFLAOnboardingTimeTrigger**: Time-based trigger scripts for forms and Zoom reports (deployment target).
+
+## Why Clasp with GitHub Actions?
+
+The selection of Clasp with Git and GitHub Actions was based on research documented in [Issue #93](https://github.com/hackforla/tables/issues/93). Key findings and rationale are summarized below.
+
+### Key Findings
+
+- **Clasp Features**: Clasp is an open-source CLI tool that enables local development of Google Apps Script projects, syncing code between a local Git repository and Google Drive. Core commands include `clasp pull` (fetch remote code), `clasp push` (upload local changes), `clasp deploy` (manage deployments), and `clasp run` (execute functions remotely). It supports structured folders, `.claspignore` for file exclusion, and integration with CI/CD pipelines.
+- **Version Control**: Pairing Clasp with Git enables tracking changes, branching, code reviews via pull requests, and collaborative development — none of which are available natively in the Apps Script editor.
+- **Testing Limitations**: Google Apps Script has third-party testing libraries (e.g., GasT, QUnit), but tests are limited to unit and dependency testing. Integration or end-to-end testing requires manual effort or a custom test harness due to Apps Script's server-side nature. Running E2E tests directly in the Apps Script editor is a practical interim solution.
+- **Clasp Limitations**: `clasp push` performs a full project overwrite (non-atomic), which can lead to data loss if a local copy is missing files. This is mitigated by requiring changes to go through PR review before merging to `main`.
+- **Security Considerations**: OAuth tokens stored in `.clasprc.json` must be kept private. In a public repository, credentials are stored as GitHub Secrets, masked in logs, and updated programmatically. Pre-commit tools like [GitLeaks](https://github.com/gitleaks/gitleaks) help catch accidentally committed secrets. GitHub Secrets are stored-only and never readable, though supply chain attacks remain a theoretical risk mitigated by [GitHub's security hardening guidelines](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions).
+- **OAuth Token Handling**: Tokens from `clasp login` expire after extended inactivity. The workflow uses `clasp list` to force a token refresh and persists updated tokens back to GitHub Secrets. A weekly scheduled run prevents token expiration during periods without code changes.
+- **Concurrency and Race Conditions**: Non-atomic push operations pose risks in multi-user scenarios. These are addressed through PR-based reviews, selective pushes based on Git diffs, and the convention that only merged code on `main` triggers deployment. Earlier research in [Issue #43](https://github.com/hackforla/tables/issues/43) identified potential race conditions with Clasp. These concerns were re-evaluated and determined to be manageable for the current scope with the mitigations above.
+
+### Reasons for Choosing Clasp
+
+1. **Standard approach for GAS**: Clasp is the most widely used tool for local GAS management, with no comparable alternatives identified during research.
+2. **Lightweight setup**: Minimal overhead (Node.js + `clasp login`), integrates seamlessly with GitHub for version control and collaboration.
+3. **CI/CD enablement**: Pairs naturally with GitHub Actions for automated deployments, token refreshes, and selective pushes via `.clasp.json` project detection.
+4. **Manageable risks**: Security concerns (e.g., token exposure) are mitigated with GitHub Secrets and hardening guidelines. Race conditions are handled through reviewed PRs and diffs.
+5. **Scalability path**: Allows future migration of high-concurrency tasks to alternatives like Google Cloud Functions, Cloudflare Workers, or AWS Lambdas.
+6. **Interim solution**: Provides immediate version control and CI/CD without requiring a full infrastructure rebuild.
+
+### Alternatives Considered
+
+| Alternative | Pros | Cons | Outcome |
+|---|---|---|---|
+| **Jenkins** | Full control, flexible, self-hosted | Requires infrastructure to host and maintain, significant setup overhead | Not implemented — overkill for current scope |
+| **CircleCI** | Simple cloud-based config | Free plan limited to 6,000 build minutes/month and 5 active users | Not implemented — scaling limitations |
+| **Cloudflare Workers** | Better scalability for async/queueing tasks | Vendor diversity concern (HfLA infra mostly on AWS), additional costs | Deferred — potential future migration for concurrency-heavy tasks |
+| **AWS Lambdas** | Aligns with existing HfLA AWS infrastructure | Requires further evaluation of benefits over Clasp for current needs | Deferred — requires further investigation |
+
+For the full discussion, see [Issue #93](https://github.com/hackforla/tables/issues/93).
+
+## Accessing the CI/CD Workflow
+
+The codebase is stored in the [hackforla/tables](https://github.com/hackforla/tables) GitHub repository. Deployments use GitHub Actions and Clasp to push code to production GAS scripts hosted on Google Cloud Platform (GCP) under the Tables Automation Apps Script project.
+
+**Workflows**:
+- **Deploy Script** (`deploy.yml`): Main deployment workflow
+- **Weekly Clasp Token Update** (`update_clasp_token.yml`): Token maintenance workflow
+
+**Scripts**:
+- **clasp_push.sh**: Selective deployment logic
+
+**Related Resources**:
+- [CONTRIBUTING.md](CONTRIBUTING.md): Contribution guidelines and setup instructions
+- [app-scripts.md](app-scripts.md): App Scripts overview
+
+Access workflows via the **Actions** tab in the GitHub repository or use `clasp` for local testing. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup guides.
+
+## Prerequisites
+
+Before setting up or running the workflow, ensure the following:
+
+### 1. Google Apps Script Project Setup
+- Each project should have a `.clasp.json` file in its directory (generated via `clasp create` or `clasp clone`).
+- Projects are organized under `src/` (e.g., `src/HFLAOnboardingAutomation/`, `src/HFLAOnboardingTimeTrigger/`).
+
+### 2. GitHub Repository Secrets
+- `CLASPRC_JSON`: The contents of your `~/.clasprc.json` file (Clasp credentials, including OAuth token). Generate this by running `clasp login` locally.
+- `REPO_ACCESS_TOKEN`: A GitHub Personal Access Token (PAT) with `repo` scope to update secrets programmatically.
+
+### 3. Clasp Installation and Authentication
+- Install Clasp locally for initial setup: `npm install -g @google/clasp`.
+- Authenticate with `clasp login` to generate credentials.
+
+### 4. Repository Structure
+- `.github/workflows/deploy.yml`: Main deployment workflow.
+- `.github/workflows/update_clasp_token.yml`: Token update workflow.
+- `.github/scripts/clasp_push.sh`: Script for selective pushing.
+- `src/`: Directory containing Apps Script projects.
+
+### 5. Permissions
+- Ensure the GitHub Actions runner has access to Node.js and bash.
+- The Google account used for `clasp login` must have edit access to the target Apps Script projects (currently `tables@hackforla.org`).
+
+## Inputs
+
+The system processes data from:
+
+- **GitHub Events**: Pushes to `main` branch or manual workflow dispatches.
+- **Scheduled Cron**: Weekly runs (every Monday at 12:00 UTC) for token maintenance.
+- **Repository Secrets**:
+  - `CLASPRC_JSON`: Clasp credentials (OAuth token from `clasp login`).
+  - `REPO_ACCESS_TOKEN`: GitHub PAT with `repo` scope for secret updates.
+- **Code Changes**: Git diffs detect modifications under `src/` for selective deployments.
+- **Clasp Commands**: `clasp list` refreshes tokens; `clasp push -f` deploys code.
+
+## Workflows
+
+### 1. Deploy Script (`deploy.yml`)
+
+This workflow deploys code changes to Google Apps Script projects when code is pushed to `main` or manually triggered.
+
+**Triggers**:
+- `push` to `branches: main`.
+- `workflow_dispatch` (manual trigger).
+
+**Job: `clasp-push`** — Runs on `ubuntu-latest`:
+
+| Step | Action | Details |
+|------|--------|---------|
+| 1 | Checkout code | Uses `actions/checkout@v4` with `fetch-depth: 0` for full Git history (required for `git diff` in `clasp_push.sh`) |
+| 2 | Set up Node.js | Uses `actions/setup-node@v4` with Node v20 |
+| 3 | Install clasp | Globally installs `@google/clasp` |
+| 4 | Write credentials | Writes the `CLASPRC_JSON` secret to `~/.clasprc.json` |
+| 5 | Refresh token | Runs `clasp list` to refresh the OAuth token if expired |
+| 6 | Save credentials | Masks and saves the updated `.clasprc.json` to an environment variable |
+| 7 | Update secret | If credentials changed, updates the `CLASPRC_JSON` GitHub secret using `gh secret set` |
+| 8 | Set permissions | Makes `clasp_push.sh` executable |
+| 9 | Deploy | Runs `clasp_push.sh` to push changes selectively |
+| 10 | Cleanup | Removes `~/.clasprc.json` |
+
+**Environment Variables/Secrets Used**:
+- `CLASPRC_JSON`: Clasp credentials.
+- `REPO_ACCESS_TOKEN`: For updating secrets via GitHub CLI.
+
+### 2. Weekly Clasp Token Update (`update_clasp_token.yml`)
+
+This workflow refreshes the Clasp authentication token weekly to prevent expiration. OAuth tokens can expire after extended inactivity, and this scheduled run ensures the token remains valid even when no code is being pushed.
+
+**Triggers**:
+- `schedule`: Every Monday at 12:00 UTC (`cron: '0 12 * * 1'`).
+- `workflow_dispatch` (manual trigger).
+
+**Job: `weekly-update`** — Runs on `ubuntu-latest`:
+
+| Step | Action | Details |
+|------|--------|---------|
+| 1 | Checkout code | Uses `actions/checkout@v4` |
+| 2 | Set up Node.js | Uses `actions/setup-node@v4` with Node v16 |
+| 3 | Install clasp | Globally installs `@google/clasp` |
+| 4 | Write credentials | Writes the `CLASPRC_JSON` secret to `~/.clasprc.json` and validates JSON with `jq` |
+| 5 | Refresh token | Runs `clasp list` to refresh the token |
+| 6 | Save credentials | Masks and saves updated credentials |
+| 7 | Update secret | If credentials changed, updates the `CLASPRC_JSON` GitHub secret |
+| 8 | Cleanup | Removes `~/.clasprc.json` |
+
+**Environment Variables/Secrets Used**: Same as `deploy.yml`.
+
+## Scripts
+
+### `clasp_push.sh`
+
+This bash script handles selective deployment by checking for changes in project directories and pushing only affected projects.
+
+**Key Logic**:
+
+- **Error Handling**: Exits on any error (`set -e`).
+- **Change Detection**:
+  - Determines changed files via `git diff` (compares to `HEAD~1` for pushes or `origin/main` otherwise).
+  - Filters changes to those under `src/`.
+  - If no changes are found, exits early.
+- **Project Discovery**:
+  - Finds all directories containing `.clasp.json` using `find`.
+- **Selective Push**:
+  - For each project directory, checks if any changed files are within it using the `contains_changes` function.
+  - If changes are found, runs `clasp push -f` (force push, skips `.claspignore` checks).
+- **Exit Code**: Sets non-zero if any push fails.
+
+**Usage**: Executed within the GitHub Actions workflow; not intended for manual runs outside of CI.
+
+## How It Works: Step-by-Step
+
+### 1. Push to Main
+
+```
+Push to main (or manual dispatch)
+    │
+    ▼
+deploy.yml
+    │
+    ├─► Checkout code (full git history for diff)
+    ├─► Set up Node.js 20 + install clasp
+    ├─► Restore OAuth credentials from CLASPRC_JSON secret
+    ├─► Run `clasp list` (forces token refresh)
+    ├─► Compare refreshed token to stored secret
+    │       └─► Update CLASPRC_JSON secret if changed
+    │
+    ├─► clasp_push.sh
+    │       │
+    │       ├─► `git diff` to find changed files under src/
+    │       ├─► Find all directories containing .clasp.json
+    │       ├─► For each project with changes:
+    │       │       └─► `clasp push -f` ──► Google Apps Script
+    │       │               ├─► HFLAOnboardingAutomation
+    │       │               └─► HFLAOnboardingTimeTrigger
+    │       └─► Exit with status
+    │
+    └─► Cleanup (remove credentials file)
+```
+
+### 2. Weekly Token Refresh
+
+```
+Weekly (Monday 12:00 UTC) or manual dispatch
+    │
+    ▼
+update_clasp_token.yml
+    │
+    ├─► Set up Node.js + install clasp
+    ├─► Restore and validate OAuth credentials
+    ├─► Run `clasp list` (forces token refresh)
+    ├─► Update CLASPRC_JSON secret if token changed
+    └─► Cleanup
+```
+
+### 3. Manual Triggers
+
+Use the GitHub UI to dispatch either workflow for on-demand runs. Navigate to the **Actions** tab in the repository, select the desired workflow, and click **Run workflow**.
+
+## Technical Summary
+
+The system, built with GitHub Actions and bash scripting, uses a modular architecture:
+
+- **Core Workflows**: `deploy.yml` handles deployments; `update_clasp_token.yml` manages token maintenance.
+- **Triggers**: Event-based (push to `main`, manual dispatch) and scheduled (weekly cron).
+- **Integrations**: GitHub API (for secret updates via `gh`), Clasp (for GAS pushes), Node.js (runtime for Clasp).
+- **Configuration**: GitHub Secrets store credentials; environment variables enable dynamic token updates within workflows.
+
+For details, see the workflow YAML files and [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Script Overview
+
+| Workflow/Script | File | Purpose |
+|---|---|---|
+| Deploy Script | `.github/workflows/deploy.yml` | Deploys code on push or manual trigger; refreshes tokens and pushes selectively |
+| Weekly Clasp Token Update | `.github/workflows/update_clasp_token.yml` | Scheduled weekly token refresh and GitHub secret update |
+| Clasp Push Script | `.github/scripts/clasp_push.sh` | Detects changed files, finds projects via `.clasp.json`, and pushes only affected code |
+
+### Security Considerations
+
+- **Secrets Management**: `CLASPRC_JSON` and `REPO_ACCESS_TOKEN` are stored as GitHub Secrets. Tokens are masked in workflow logs (`::add-mask::`) and updated programmatically. **Recommendation**: Rotate the `REPO_ACCESS_TOKEN` PAT quarterly and use minimal scopes.
+- **Access Control**: The repository is restricted to authorized contributors via GitHub permissions. Only merged code on `main` triggers deployment, preventing unauthorized pushes. **Recommendation**: Audit Actions permissions and secrets access regularly.
+- **Credential Cleanup**: Workflow steps remove `~/.clasprc.json` after use to prevent credential persistence on runners.
+- **Secret Scanning**: Use pre-commit tools like [GitLeaks](https://github.com/gitleaks/gitleaks) to prevent accidental credential commits. See [security.md](security.md) for the project's secrets detection practices.
+
+### Versioning and CI/CD Pipeline
+
+Script versions are tracked in the [hackforla/tables](https://github.com/hackforla/tables) GitHub repository. Updates are deployed via GitHub Actions, triggered on `main` branch pushes. Deployments include Node.js setup, Clasp installation, token validation, and selective pushes. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup guides.
+
+## Troubleshooting
+
+| Problem | Solution |
+|---|---|
+| Clasp authentication fails (`"Clasp can't use current credential"`) | Check `CLASPRC_JSON` secret for validity. Run `clasp login` locally and update the secret. |
+| No changes detected | Ensure changes are in `src/` directory and Git history is fetched correctly (`fetch-depth: 0`). |
+| Secret update fails | Verify `REPO_ACCESS_TOKEN` has `repo` scope and hasn't expired. |
+| JSON validation errors | Ensure `CLASPRC_JSON` is properly formatted. Test locally with `jq . ~/.clasprc.json`. |
+| `clasp push` fails for a project | Check that `.clasp.json` has the correct `scriptId`. Verify the authenticated account has edit access to the target Apps Script project. |
+| Workflow permissions error | Ensure GitHub Actions are enabled in repository settings and the workflow has appropriate permissions. |
+| Token expires frequently | If the weekly refresh is insufficient, increase the cron frequency or manually dispatch the token update workflow. |
+
+## Best Practices
+
+- **Security**: Mask secrets in logs and avoid committing credentials. Follow [GitHub's security hardening guidelines](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions).
+- **Testing**: Test workflows on a feature branch before merging to `main`.
+- **Monitoring**: Set up GitHub notifications for workflow failures. Review the **Actions** tab regularly.
+- **Scalability**: For additional projects, add a `.clasp.json` in the project directory under `src/`. The selective push logic will automatically detect and deploy it.
+
+## Upcoming Improvements
+
+Due to evolving requirements and rapid feature development, planned improvements include:
+
+- **Pre-commit Hooks**: Add linting and GitLeaks scanning as pre-commit checks to catch issues before they reach CI.
+- **Enhanced Testing**: Integrate a unit test framework (e.g., GasT, QUnit) into the GitHub Actions workflow. Run tests before deployment to catch regressions. See [Issue #93](https://github.com/hackforla/tables/issues/93) for the testing discussion.
+- **Error Notifications**: Implement Slack or email alerts for failed workflow runs.
+- **Merge Conflict Mitigation**: Develop scripts for diff-based conflict detection and automated reviewer assignment for overlapping PRs.
+- **Node.js Version Consistency**: Unify Node.js versions across workflows (`deploy.yml` currently uses Node 20, `update_clasp_token.yml` uses Node 16 which is EOL).
+- **Improved Diff Detection**: Replace `HEAD~1` diff with `${{ github.event.before }}..${{ github.event.after }}` for more reliable change detection on squash merges.
+- **Staging Environment**: Create a mirrored GCP project with duplicate Apps Script instances for safe testing before production deployment.
+- **Long-Term Migration**: Evaluate Cloudflare Workers or AWS Lambdas for concurrency-heavy tasks that exceed Apps Script's capabilities.
+
+## Resources for New Contributors
+
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Clasp Setup Guide](https://github.com/google/clasp)
+- [Google Apps Script Documentation](https://developers.google.com/apps-script)
+- [GitHub Security Hardening for Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [Issue #93: CI/CD and Version Control Options](https://github.com/hackforla/tables/issues/93)
