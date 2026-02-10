@@ -56,3 +56,73 @@ function getGithubRequest(env, invitee, team, method = 'put', role = 'member', u
     url: requestUrl
   };
 }
+
+/** 
+ * Returns the log sheet (creates it the sheet + headers if it doesn't exist)
+ * Uses its own dedicated spreadsheet ID – change this to your actual logs spreadsheet ID
+ */
+function getAutomationLogSheet() {
+  // <<< PUT YOUR LOGS SPREADSHEET ID HERE >>>
+  const LOG_SPREADSHEET_ID = '1sB-FSmO4fwuC7NvwKLqQh1STpG2e5F8twnvFM0lxClY'; // <-- CHANGE THIS
+
+  const ss = SpreadsheetApp.openById(LOG_SPREADSHEET_ID);
+  const SHEET_NAME = "Project On/off board Automation_Logs";
+
+  let sheet = ss.getSheetByName(SHEET_NAME);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+    sheet.appendRow([
+      "Timestamp",
+      "Action",            // onboarding or offboarding
+      "Project Name",
+      "GitHub Handle",
+      "Role",              // blank for offboarding
+      "Record ID",
+      "Total Time (sec)",
+      "Result Status",     // success / partial/error / no volunteer record
+      "GitHub Comment URL",
+      "Full Log JSON"
+    ]);
+    // Make header bold and freeze it
+    const headerRange = sheet.getRange("A1:J1");
+    headerRange.setFontWeight("bold");
+    sheet.setFrozenRows(1);
+  }
+
+  return sheet;
+}
+
+/**
+ * Appends the complete processLog to the log sheet
+ */
+function logAutomationProcess(processLog) {
+  try {
+    const sheet = getAutomationLogSheet();
+
+    // Determine overall result status
+    let resultStatus = "success";
+    if (processLog.steps.some(s => s.status === "error" || (s.message && s.message.includes("error")))) {
+      resultStatus = "partial/error";
+    }
+    if (processLog.steps.some(s => s.message && /No volunteer record found|not found in volunteer database/.test(s.message))) {
+      resultStatus = "no volunteer record";
+    }
+
+    sheet.appendRow([
+      processLog.timestamp || new Date().toISOString(),
+      processLog.action || "",
+      processLog.projectName || "",
+      processLog.githubHandle || "",
+      processLog.role || "",
+      processLog.recordId || "",
+      processLog.total_time_to_process ? (processLog.total_time_to_process / 1000).toFixed(3) : "",
+      resultStatus,
+      processLog.githubCommentUrl || "N/A",
+      JSON.stringify(processLog, null, 2)  // full log for debugging
+    ]);
+  } catch (e) {
+    // If logging itself fails, at least show it in the script log
+    Logger.log("CRITICAL: Failed to write to automation log sheet: " + e);
+  }
+}

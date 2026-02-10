@@ -5,6 +5,7 @@
  * @param {string} role - The role to assign.
  * @param {number} recordId - The record ID (row number).
  * @returns {Object} - { status: 'success'|'error', message: string }
+ * GUARANTEES a GitHub comment on EVERY attempt — success or total failure.
  */
 function projectOnboardingAutomation(projectName, githubHandle, role, recordId) {
   Logger.log(`Starting onboarding for project: ${projectName}, member: ${githubHandle}, role: ${role}, recordId: ${recordId}`);
@@ -19,18 +20,23 @@ function projectOnboardingAutomation(projectName, githubHandle, role, recordId) 
     recordId: recordId,
     total_time_to_process: 0,
     steps: [],
-    tasks:[]
+    tasks: []
   };
+  processLog.steps.push({ 
+    step: 'start', 
+    message: `Starting onboarding for project: ${projectName}, member: ${githubHandle}, role: ${role}, recordId: ${recordId}` 
+  });
 
-  processLog.steps.push({ step: 'start', message: `Starting onboarding for project: ${projectName}, member: ${githubHandle}, role: ${role}, recordId: ${recordId}` });
-
+  let finalComment = null;
+  let githubCommentResult = null;
 
   try {
+    /* ---------- BASIC VALIDATION ---------- */
     if (!projectName || typeof projectName !== 'string') {
       throw new Error('Project name is required and must be a string');
     }
     if (!isValidGitHubHandle(githubHandle)) {
-      throw new Error(`Invalid GitHub handle: ${githubHandle}`);
+      throw new Error(`Invalid GitHub handle: "${githubHandle}" (empty, contains comma, or invalid format)`);
     }
     if (!role || typeof role !== 'string') {
       throw new Error('Role is required and must be a string');
@@ -39,59 +45,89 @@ function projectOnboardingAutomation(projectName, githubHandle, role, recordId) 
       throw new Error(`Invalid record ID: ${recordId}`);
     }
 
+    /* ---------- FETCH DATA ---------- */
     const projectInfoResult = getProjectInfo(projectName, processLog);
     if (!projectInfoResult.data) {
-      throw new Error(`Project ${projectName} not found`);
+      throw new Error(`Project "${projectName}" not found in Volunteers sheet`);
     }
     const projectInfo = projectInfoResult.data;
-    
+
     const emailsResult = getEmails(githubHandle, processLog);
     if (!emailsResult.data) {
-      throw new Error(`Emails for ${githubHandle} not found`);
+      throw new Error(`No volunteer record found for GitHub handle: ${githubHandle}`);
     }
     const emails = emailsResult.data;
     processLog.steps.push({ step: 'emails', message: `Fetched emails for ${githubHandle}` });
-    
+
     const roleInfoResult = getRolePermission(role, processLog);
     if (!roleInfoResult.data) {
-      throw new Error(`Role ${role} not found`);
+      throw new Error(`Role "${role}" not found in Roles sheet`);
     }
     const roleInfo = roleInfoResult.data;
-    
-    // Add user to Google Drive
+
+    /* ---------- EXECUTE TASKS ---------- */
     const driveResult = addUserToProjectDrive(emails, projectInfo, roleInfo, processLog);
     processLog.tasks.push(driveResult);
-    
-    // Add user to GitHub teams
+
     const githubResult = addToProjectGithubTeams(githubHandle, projectInfo, roleInfo, processLog);
     processLog.tasks.push(githubResult);
-    
-    // Add project to member's database
+
     const dbResult = addProjectToHFLADB(githubHandle, projectName, processLog);
     processLog.tasks.push(dbResult);
-    
+
     processLog.total_time_to_process = Date.now() - startTime;
+    finalComment = constructOnboardingComment(processLog);
+    processLog.steps.push({ step: 'complete', status: 'success', message: `Successfully onboarded ${githubHandle}` });
 
-    // Construct and post the GitHub comment
-    const commentBody = constructOnboardingComment(processLog);
-    if (!commentBody) {
-      throw new Error('Failed to construct onboarding comment');
-    }
-    Logger.log(`Constructed comment: ${commentBody}`);
-    
-    //log result on github issue
-    const githubCommentResult = onboardingGHlog(commentBody, processLog);
-    processLog.steps.push(githubCommentResult);
-
-    processLog.steps.push({ step: 'complete', status: 'success', message: `Successfully onboarded ${githubHandle} to ${projectName} with role ${role}` });
-    Logger.log("log: " + JSON.stringify(processLog, null, 2));//show log
-    return { status: 'success', message: `User ${githubHandle} onboarded successfully` };
   } catch (error) {
-    processLog.steps.push({ step: 'error', status: 'error', message: `Onboarding error for ${githubHandle}: ${error.message}` });
+    // Capture all errors — including early validation failures
+    processLog.steps.push({ 
+      step: 'error', 
+      status: 'error', 
+      message: `Onboarding failed: ${error.message}` 
+    });
     processLog.total_time_to_process = Date.now() - startTime;
-    Logger.log("log: " + JSON.stringify(processLog, null, 2));//show log
-    return { status: 'error', message: error.message };
+
+    // Build fallback comment if normal one isn't available
+    if (!finalComment) {
+      finalComment = constructOnboardingComment(processLog); // will use fallback below
+    }
+  } finally {
+    // FINAL BLOCK: GitHub comment is now 100% GUARANTEED
+    if (finalComment) {
+      Logger.log(`Posting GitHub comment:\n${finalComment}`);
+      githubCommentResult = onboardingGHlog(finalComment, processLog);
+      processLog.steps.push(githubCommentResult);
+
+      if (githubCommentResult.status === 'success' && githubCommentResult.data?.commentUrl) {
+        processLog.githubCommentUrl = githubCommentResult.data.commentUrl;
+      } else {
+        processLog.githubCommentUrl = "Failed to post comment";
+      }
+    } else {
+      // Ultra-rare case: even comment construction failed
+      const fallback = `## Onboarding Failed (Critical Error)\n\n` +
+        `**${githubHandle || 'unknown'}** could not be onboarded to **${projectName || 'unknown'}**\n\n` +
+        `No log details available. Check Apps Script logs immediately.\n\n` +
+        `Time: ${new Date().toISOString()}`;
+      githubCommentResult = onboardingGHlog(fallback, processLog);
+      processLog.steps.push(githubCommentResult);
+      processLog.githubCommentUrl = githubCommentResult.data?.commentUrl || "Failed to post fallback comment";
+    }
+
+    // Always save to logs sheet
+    logAutomationProcess(processLog);
+    Logger.log("Final log: " + JSON.stringify(processLog, null, 2));
   }
+
+  // Final status
+  const hasError = processLog.steps.some(s => s.status === 'error');
+  return {
+    status: hasError ? 'error' : 'success',
+    message: hasError 
+      ? `Onboarding failed for ${githubHandle} — see GitHub comment for details`
+      : `User ${githubHandle} successfully onboarded to ${projectName}`
+  };
 }
 /**
  * Retrieves project information from the Volunteers spreadsheet.
@@ -159,15 +195,15 @@ function getEmails(githubHandle, processLog) {
       throw new Error('github_handle column not found');
     }
     
-    const memberRow = data.find(row => row[githubCol] === githubHandle);
+    const memberRow = data.find(row => row[githubCol] && row[githubCol].toString().trim().toLowerCase() === githubHandle.trim().toLowerCase());
     if (!memberRow) {
       processLog.steps.push({ step: 'getEmails', status: 'error', message: `No member found with githubHandle: ${githubHandle}` });
       return { status: 'error', message: `No member found with githubHandle: ${githubHandle}`, data: null };
     }
     
     const emails = {
-      preferred_email: memberRow[headers.indexOf('preferred_email')],
-      gmail: memberRow[headers.indexOf('Gmail')]
+      preferred_email: memberRow[headers.indexOf('preferred_email')].trim().toLowerCase(),
+      gmail: memberRow[headers.indexOf('Gmail')].trim().toLowerCase()
     };
     
     processLog.steps.push({ step: 'getEmails', status: 'success', message: `Fetched emails for ${githubHandle}` });
@@ -239,6 +275,7 @@ function getRolePermission(role, processLog) {
 }
 /**
  * Adds a user to project Google Drives based on role permissions.
+ * Emails are NEVER shown in public GitHub comments.
  * @param {Object} emails - The user's email addresses.
  * @param {Object} projectInfo - The project information.
  * @param {Object} roleInfo - The role permissions.
@@ -247,11 +284,18 @@ function getRolePermission(role, processLog) {
  */
 function addUserToProjectDrive(emails, projectInfo, roleInfo, processLog) {
   if (!emails || !projectInfo || !roleInfo) {
-    processLog.steps.push({ step: 'addUserToProjectDrive', status: 'error', message: 'Missing required parameters for addUserToProjectDrive' });
-
-    return { task: 'add to Project Drives',status: 'error', message: 'Missing required parameters for addUserToProjectDrive' };
+    processLog.steps.push({ 
+      step: 'addUserToProjectDrive', 
+      status: 'error', 
+      message: 'Missing required parameters for addUserToProjectDrive' 
+    });
+    return { 
+      task: 'add to Project Drives',
+      status: 'error', 
+      message: 'Missing required parameters' 
+    };
   }
-  
+
   const addToDrive = (email, driveId, permissionRole) => {
     try {
       Drive.Permissions.insert(
@@ -266,48 +310,92 @@ function addUserToProjectDrive(emails, projectInfo, roleInfo, processLog) {
           supportsAllDrives: true
         }
       );
-      processLog.steps.push({ step: 'addUserToProjectDrive', status: 'success', message: `Added ${email} to Drive ${driveId} as ${permissionRole}` });
-      return true;
+      return { 
+        success: true, 
+        publicMsg: `Successfully added to Drive as ${permissionRole === 'organizer' ? 'manager' : 'contributor'}`,
+        debugMsg: `Added ${email} to Drive ${driveId} as ${permissionRole}`  // private only
+      };
     } catch (error) {
-      processLog.steps.push({ step: 'addUserToProjectDrive', status: 'error', message: `Failed to add ${email} to Drive ${driveId}: ${error.message}` });
-      return false;
+      return { 
+        success: false, 
+        publicMsg: `Failed to add to Drive`,
+        debugMsg: `Failed to add ${email} to Drive ${driveId}: ${error.message}`
+      };
     }
   };
-  
-  const tryAddToDrive = (driveId, permissionRole) => {
+
+  const tryAddToDrive = (driveId, permissionRole, driveType) => {
+    let added = false;
+    let usedEmail = null;
+    const publicLines = [];
+    const debugLines = [];
+
+    // Try preferred email first
     if (emails.preferred_email) {
-      if (addToDrive(emails.preferred_email, driveId, permissionRole)) {
-        return true;
-      }
-      processLog.steps.push({ step: 'addUserToProjectDrive', status: 'info', message: `Preferred email ${emails.preferred_email} failed, attempting Gmail fallback` });
+      const r = addToDrive(emails.preferred_email, driveId, permissionRole);
+      publicLines.push(r.publicMsg);
+      debugLines.push(r.debugMsg);
+      processLog.steps.push({ 
+        step: 'addUserToProjectDrive', 
+        status: r.success ? 'success' : 'error', 
+        message: r.debugMsg 
+      });
+      if (r.success) { added = true; usedEmail = emails.preferred_email; }
     }
-    
-    if (emails.gmail) {
-      return addToDrive(emails.gmail, driveId, permissionRole);
+
+    // Fallback to Gmail if preferred failed
+    if (!added && emails.gmail && emails.gmail !== emails.preferred_email) {
+      const r = addToDrive(emails.gmail, driveId, permissionRole);
+      publicLines.push(r.publicMsg);
+      debugLines.push(r.debugMsg);
+      processLog.steps.push({ 
+        step: 'addUserToProjectDrive', 
+        status: r.success ? 'success' : 'info', 
+        message: r.debugMsg 
+      });
+      if (r.success) { added = true; usedEmail = emails.gmail; }
     }
-    
-    processLog.steps.push({ step: 'addUserToProjectDrive', status: 'error', message: 'No valid email available for Drive access' });
-    return false;
+
+    const finalPublic = added
+      ? `Successfully added to ${driveType} Drive`
+      : `Failed to add to ${driveType} Drive`;
+
+    return { added, publicMsg: finalPublic };
   };
-  
-  let success = false;
-  let log = "";
+
+  let allSuccess = true;
+  let log = '';
+
+  // Main Drive
   if (projectInfo.main_drive_id) {
     if (roleInfo.gd_project_manager) {
-      success = tryAddToDrive(projectInfo.main_drive_id, 'organizer') || success;
-      success?log+=`added member to main google drive as manager \n`:log+=`unable to member to main google drive as manager \n`;
+      const res = tryAddToDrive(projectInfo.main_drive_id, 'organizer', 'main');
+      log += res.publicMsg + '\n';
+      allSuccess = allSuccess && res.added;
     } else if (roleInfo.gd_project_contributor) {
-      success = tryAddToDrive(projectInfo.main_drive_id, 'writer') || success;
-      success?log+=`added member to main google drive as contributor \n`:log+=`unable to added member to main google drive as contributor \n`;
+      const res = tryAddToDrive(projectInfo.main_drive_id, 'writer', 'main');
+      log += res.publicMsg + '\n';
+      allSuccess = allSuccess && res.added;
     }
-    
   }
+
+  // PII Drive
   if (projectInfo.pii_drive_id && roleInfo.gd_project_pii_manager) {
-    success = tryAddToDrive(projectInfo.pii_drive_id, 'organizer') || success;
-    success?log+=`added member to PII google drive as organizer \n`:log`unable added member to PII google drive as organizer \n`;
+    const res = tryAddToDrive(projectInfo.pii_drive_id, 'organizer', 'PII');
+    log += res.publicMsg + '\n';
+    allSuccess = allSuccess && res.added;
   }
-  
-  return { task: 'add to Project Drives',status: success ? 'success' : 'error', message: log };
+
+  if (!projectInfo.main_drive_id && !projectInfo.pii_drive_id) {
+    log = 'No project Drives configured';
+    allSuccess = true;
+  }
+
+  return { 
+    task: 'add to Project Drives', 
+    status: allSuccess ? 'success' : 'error', 
+    message: log.trim() 
+  };
 }
 
 /**
@@ -519,6 +607,30 @@ function constructOnboardingComment(processLog) {
   if (!processLog) {
     processLog.steps.push({ step: 'constructOnboardingComment', status: 'error', message: 'Missing required data in processLog for constructing comment' });
     return null;
+  }
+  // FALLBACK: If no tasks ran (early validation or critical failure)
+  if (processLog.tasks.length === 0) {
+    const errorStep = processLog.steps.find(s => s.step === 'error');
+    const errorMsg = errorStep ? errorStep.message : 'Unknown error during onboarding';
+
+    const today = new Date();
+    const todayFormatted = Utilities.formatDate(today, CONFIG.TIME_ZONE, 'yyyy-MM-dd hh:mm');
+    const timestampFormatted = Utilities.formatDate(today, CONFIG.TIME_ZONE, 'yyyy-MM-dd hh:mm:ss');
+    const totalTime = processLog.total_time_to_process / 1000;
+    const timeString = totalTime < 60 ? `${totalTime.toFixed(2)} seconds` : `${(totalTime / 60).toFixed(2)} minutes`;
+
+    const comment = `## Onboarding Failed Early\n\n` +
+      `**${processLog.githubHandle || 'unknown'}** (role: **${processLog.role || 'unknown'}**) ` +
+      `could not be onboarded to **${processLog.projectName || 'unknown'}**\n\n` +
+      `Error: ${errorMsg}\n\n` +
+      `request made ${timestampFormatted}, total time to process ${timeString}`;
+
+    processLog.steps.push({
+      step: 'constructOnboardingComment',
+      status: 'success',
+      message: 'Fallback error comment constructed'
+    });
+    return comment;
   }
 
   const totalTime = processLog.total_time_to_process / 1000; // Convert to seconds

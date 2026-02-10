@@ -41,7 +41,7 @@ const CONFIG = {
     VOLUNTEERS: '15ByO77F032kr5xBiX_xJw3BXz8Yd1A-gDUASyI9mAiw',
     ZOOM_REPORT: '1zYfTMyr0Yospj5hLjz0ZdX93llJ8Zy-JF_9k-cPUuW0', // "Part1_onboarding_zoom_attendee_report" in Drive Tables > Tables > Database
     ROLES: '1DCWo6ZLBGqIBK07k-uckVH-STcBAChzFGaBdVp8c-Kw',
-    ONBOARDING_TIME_TRIGGER:"1uNXw1yX6g1O5wH7xFOqpA89yrD6EGx1c8tgRTRnQZvVeoP1NIbz9v_yr"
+    ONBOARDING_TIME_TRIGGER:"AKfycbw_MwfgMl23dvAn_X-XM4yukMi6bt4pA6YUR6AAosYULhyU1yOrPdGVGGy56eYifzNf"
   },
 
   // Sheet GIDs
@@ -72,7 +72,7 @@ const CONFIG = {
 
   // Website onboarding settings
   WEBSITE: {
-    PROJECT_NAME: 'hackforla.org',
+    PROJECT_NAME: 'HackforLA.org',
     GITHUB_TEAMS: ['website', 'website-write'],
     GITHUB_ROLE: 'member'
   },

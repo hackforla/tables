@@ -358,7 +358,7 @@ function getScriptSecret(key) {
 }
 
 // Function sends an error email message to tables@hackforla.org if an error occurs in the onboarding process
-function errorMessage(subject, error) {
-  let message = error;
-  MailApp.sendEmail("tables@hackforla.org", subject, message);
+function errorMessage(message, context) {
+  var shortSubject = (context || 'Error') + ': ' + message.substring(0, 100) + '...';  // Truncate to safe length
+  MailApp.sendEmail('your@email.com', shortSubject, message);  // Adjust recipient/body as needed
 }

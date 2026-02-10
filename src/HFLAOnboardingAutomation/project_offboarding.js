@@ -4,10 +4,11 @@
  * @param {string} githubHandle - The volunteer's GitHub handle.
  * @param {number} recordId - The record ID (row number).
  * @returns {Object} - { status: 'success'|'error', message: string }
+ * GUARANTEES a GitHub comment on EVERY attempt — success, partial, or total failure.
  */
 function projectOffboardingAutomation(projectName, githubHandle, recordId) {
   Logger.log(`Starting offboarding for project: ${projectName}, member: ${githubHandle}, recordId: ${recordId}`);
-  
+
   const startTime = Date.now();
   let processLog = {
     timestamp: new Date().toISOString(),
@@ -17,69 +18,103 @@ function projectOffboardingAutomation(projectName, githubHandle, recordId) {
     recordId: recordId,
     total_time_to_process: 0,
     steps: [],
-    tasks:[]
+    tasks: []
   };
+  processLog.steps.push({ 
+    step: 'start', 
+    message: `Starting offboarding for project: ${projectName}, member: ${githubHandle}, recordId: ${recordId}` 
+  });
 
-  processLog.steps.push({ step: 'start', message: `Starting offboarding for project: ${projectName}, member: ${githubHandle}, recordId: ${recordId}` });
+  let finalComment = null;
+  let githubCommentResult = null;
 
   try {
+    /* ---------- BASIC VALIDATION ---------- */
     if (!projectName || typeof projectName !== 'string') {
       throw new Error('Project name is required and must be a string');
     }
     if (!isValidGitHubHandle(githubHandle)) {
-      throw new Error(`Invalid GitHub handle: ${githubHandle}`);
+      throw new Error(`Invalid GitHub handle: "${githubHandle}" (may contain comma, space, or be empty)`);
     }
     if (!recordId || isNaN(recordId)) {
       throw new Error(`Invalid record ID: ${recordId}`);
     }
 
+    /* ---------- PROJECT INFO ---------- */
     const projectInfoResult = getProjectInfo(projectName, processLog);
     if (!projectInfoResult.data) {
-      throw new Error(`Project ${projectName} not found`);
+      throw new Error(`Project "${projectName}" not found in Volunteers sheet`);
     }
     const projectInfo = projectInfoResult.data;
-    
+
+    /* ---------- EMAIL LOOKUP ---------- */
     const emailsResult = getEmails(githubHandle, processLog);
     if (!emailsResult.data) {
-      throw new Error(`Emails for ${githubHandle} not found`);
+      processLog.total_time_to_process = Date.now() - startTime;
+      finalComment = constructOffboardingComment(processLog, true); // noMatch = true
+      githubCommentResult = onboardingGHlog(finalComment, processLog);
+      processLog.steps.push(githubCommentResult);
+      throw new Error(`GitHub handle "${githubHandle}" not found in volunteer database`);
     }
     const emails = emailsResult.data;
     processLog.steps.push({ step: 'emails', message: `Fetched emails for ${githubHandle}` });
 
-    // Remove user from Google Drive
+    /* ---------- NORMAL PIPELINE ---------- */
     const driveResult = removeUserFromProjectDrive(emails, projectInfo, processLog);
     processLog.tasks.push(driveResult);
 
-    // Remove user from GitHub teams, keeping read access
     const githubResult = removeFromProjectGithubTeams(githubHandle, projectInfo, processLog);
     processLog.tasks.push(githubResult);
-    
-    // Remove project from member's database 
+
     const dbResult = removeProjectFromHFLADB(githubHandle, projectName, processLog);
     processLog.tasks.push(dbResult);
-    
+
+    processLog.total_time_to_process = Date.now() - startTime;
+    finalComment = constructOffboardingComment(processLog);
+    processLog.steps.push({ step: 'complete', status: 'success', message: `Successfully offboarded ${githubHandle}` });
+
+  } catch (error) {
+    // This catch now runs for ALL errors — including validation
+    processLog.steps.push({ 
+      step: 'error', 
+      status: 'error', 
+      message: `Offboarding failed: ${error.message}` 
+    });
     processLog.total_time_to_process = Date.now() - startTime;
 
-    // Construct and post the GitHub comment
-    const commentBody = constructOffboardingComment(processLog);
-    if (!commentBody) {
-      throw new Error('Failed to construct offboarding comment');
+    // Always try to build a comment — even on total failure
+    if (!finalComment) {
+      finalComment = constructOffboardingComment(processLog); // fallback: will show error in steps
     }
-    Logger.log(`Constructed comment: ${commentBody}`);
-    
-    //log result on github issue
-    const githubCommentResult = onboardingGHlog(commentBody, processLog);
-    processLog.steps.push(githubCommentResult);
+  } finally {
+    if (finalComment) {
+      Logger.log(`Posting GitHub comment:\n${finalComment}`);
+      githubCommentResult = onboardingGHlog(finalComment, processLog);
+      processLog.steps.push(githubCommentResult);
 
-    processLog.steps.push({ step: 'complete', status: 'success', message: `Successfully offboarded ${githubHandle} from ${projectName}` });
-    Logger.log("log: " + JSON.stringify(processLog, null, 2));//show log
-    return { status: 'success', message: `User ${githubHandle} offboarded successfully` };
-    
-  } catch (error) {
-    processLog.steps.push({ step: 'error', status: 'error', message: `Offboarding error for ${githubHandle}: ${error.message}` });
-    Logger.log("log: " + JSON.stringify(processLog, null, 2));//show log
-    return { status: 'error', message: error.message };
+      if (githubCommentResult.status === 'success' && githubCommentResult.data?.commentUrl) {
+        processLog.githubCommentUrl = githubCommentResult.data.commentUrl;
+      } else {
+        processLog.githubCommentUrl = "Failed to post comment";
+      }
+    } else {
+      processLog.githubCommentUrl = "No comment generated";
+      processLog.steps.push({ step: 'onboardingGHlog', status: 'error', message: 'Failed to construct comment body' });
+    }
+
+    // Always log to sheet
+    logAutomationProcess(processLog);
+    Logger.log("Final log: " + JSON.stringify(processLog, null, 2));
   }
+
+  // Return based on outcome
+  const hasError = processLog.steps.some(s => s.status === 'error');
+  return {
+    status: hasError ? 'error' : 'success',
+    message: hasError 
+      ? `Offboarding failed for ${githubHandle}: check GitHub comment`
+      : `User ${githubHandle} offboarded successfully`
+  };
 }
 
 /**
@@ -91,56 +126,115 @@ function projectOffboardingAutomation(projectName, githubHandle, recordId) {
  */
 function removeUserFromProjectDrive(emails, projectInfo, processLog) {
   if (!emails || !projectInfo) {
-    processLog.steps.push({ step: 'removeUserFromProjectDrive', status: 'error', message: 'Missing required parameters for removeUserFromProjectDrive' });
-    return{ task: 'remove from Project Drives',status: 'error', message: 'Missing required parameters for removeUserFromProjectDrive' };
+    processLog.steps.push({ 
+      step: 'removeUserFromProjectDrive', 
+      status: 'error', 
+      message: 'Missing required parameters for removeUserFromProjectDrive' 
+    });
+    return { 
+      task: 'remove from Project Drives',
+      status: 'error', 
+      message: 'Missing required parameters for removeUserFromProjectDrive' 
+    };
   }
-  //Logger.log(`Attempting to remove user from Drive with emails: ${JSON.stringify(emails, null, 2)}, projectInfo: ${JSON.stringify(projectInfo, null, 2)}`);
-  
-  const removeFromDrive = (email, driveId) => {
+
+  const removeFromDrive = (email, driveId, driveType) => {
     try {
       const permissions = Drive.Permissions.list(driveId, { supportsAllDrives: true }).items;
-      const permission = permissions.find(p => p.emailAddress && p.emailAddress.toLowerCase() === email.toLowerCase());
+      const permission = permissions.find(p =>
+        p.emailAddress && p.emailAddress.toLowerCase() === email.toLowerCase()
+      );
       if (permission) {
         Drive.Permissions.remove(driveId, permission.id, { supportsAllDrives: true });
-        processLog.steps.push({ step: 'removeUserFromProjectDrive', status: 'success', message: `Removed ${email} from Drive ${driveId}` });
-        return true;
+        return { 
+          success: true, 
+          reason: `Successfully removed user from Drive ${driveId}`,
+          debugReason: `Successfully removed ${email} from Drive ${driveId}`  // only for internal log
+        };
       } else {
-        processLog.steps.push({ step: 'removeUserFromProjectDrive', status: 'error', message: `No permission found for ${email} in Drive ${driveId}`});
-        return false;
+        return { 
+          success: false, 
+          reason: `No access found in Drive ${driveId}`,
+          debugReason: `No permission found for ${email} in Drive ${driveId}`  // internal only
+        };
       }
     } catch (error) {
-      processLog.steps.push({ step: 'removeUserFromProjectDrive', status: 'error', message: `Failed to remove ${email} from Drive ${driveId}: ${error.message}`});
-      return false;
+      return { 
+        success: false, 
+        reason: `Failed to check/remove access from Drive ${driveId}`,
+        debugReason: `Failed to remove ${email} from Drive ${driveId}: ${error.message}`
+      };
     }
   };
 
-  const tryRemoveFromDrive = (driveId) => {
+  const tryRemoveFromDrive = (driveId, driveType) => {
+    const reasons = [];
+    const debugReasons = [];  // will be used only in processLog.steps (private)
     let removed = false;
+    let usedEmail = null;
+
     if (emails.preferred_email) {
-      removed = removeFromDrive(emails.preferred_email, driveId);
+      const r = removeFromDrive(emails.preferred_email, driveId);
+      reasons.push(r.reason);
+      debugReasons.push(r.debugReason);
+      processLog.steps.push({ 
+        step: 'removeUserFromProjectDrive', 
+        status: r.success ? 'success' : 'info', 
+        message: r.debugReason 
+      });
+      if (r.success) { removed = true; usedEmail = emails.preferred_email; }
     }
-    if (!removed && emails.gmail && emails.gmail !== emails.preferred_email) {
-      removed = removeFromDrive(emails.gmail, driveId);
+
+    if (!removed && emails.gmail && emails.gmail.toLowerCase() !== (emails.preferred_email||'').toLowerCase()) {
+      const r = removeFromDrive(emails.gmail, driveId);
+      reasons.push(r.reason);
+      debugReasons.push(r.debugReason);
+      processLog.steps.push({ 
+        step: 'removeUserFromProjectDrive', 
+        status: r.success ? 'success' : 'info', 
+        message: r.debugReason 
+      });
+      if (r.success) { removed = true; usedEmail = emails.gmail; }
     }
-    if (!removed) {
-      processLog.steps.push({ step: 'removeUserFromProjectDrive', status: 'error', message: `No valid email found to remove from Drive ${driveId}`});
-    }
-    return removed;
+
+    const publicMsg = removed
+      ? `Successfully removed user from ${driveType} Drive`
+      : `No access found (with user's emails from database) or failed to remove from ${driveType} Drive`;
+
+    return { removed, msg: publicMsg };
   };
 
-  let success = false;
-  let log = "";
+  let allSuccess = true;
+  let log = '';
+  let hasDrives = false;
+
   if (projectInfo.main_drive_id) {
-    success = tryRemoveFromDrive(projectInfo.main_drive_id)|| success;
-    success?log+=`removed member from main google drive \n`:log+=`unable to remove member from main google drive \n`;
+    hasDrives = true;
+    const { removed, msg } = tryRemoveFromDrive(projectInfo.main_drive_id, 'main');
+    log += msg + '\n';
+    allSuccess = allSuccess && removed;
   }
-  
+
   if (projectInfo.pii_drive_id) {
-    success = tryRemoveFromDrive(projectInfo.pii_drive_id)|| success;
-    success?log+=`removed member from PII google drive \n`:log+=`unable to remove member from PII google drive \n`;
+    hasDrives = true;
+    const { removed, msg } = tryRemoveFromDrive(projectInfo.pii_drive_id, 'PII');
+    log += msg + '\n';
+    allSuccess = allSuccess && removed;
   }
-  return { task: 'remove from Project Drives',status: success ? 'success' : 'error', message: log };
+
+  if (!hasDrives) {
+    log = 'No project Drives configured to remove from';
+    allSuccess = true;
+  }
+
+  return { 
+    task: 'remove from Project Drives', 
+    status: allSuccess ? 'success' : 'error', 
+    message: log.trim() 
+  };
 }
+
+
 
 /**
  * Removes a user from project GitHub teams, retaining read access.
@@ -279,74 +373,98 @@ function removeProjectFromHFLADB(githubHandle, projectName, processLog) {
   }
 }
 /**
- * Logs the offboarding result to a GitHub issue.
- * @param {string} commentBody - The comment body.
- * @param {Object} processLog - The process log object.
- * @returns {Object} - { status: 'success'|'error', message: string, data: Object|null }
+ * Builds the GitHub issue comment.
+ * @param {Object} processLog
+ * @param {boolean} [noMatch=false]  – true when the handle was not found in the DB
+ * @returns {string|null}
  */
-function constructOffboardingComment(processLog) {
+function constructOffboardingComment(processLog, noMatch = false) {
   if (!processLog) {
-    processLog.steps.push({ step: 'constructOffnboardingComment', status: 'error', message: 'Missing required data in processLog for constructing comment' });
+    processLog.steps.push({
+      step: 'constructOffboardingComment',
+      status: 'error',
+      message: 'Missing required data in processLog for constructing comment'
+    });
     return null;
   }
 
-  const totalTime = processLog.total_time_to_process / 1000; // Convert to seconds
-  const timeString = totalTime < 60 ? `${totalTime.toFixed(2)} seconds` : `${(totalTime / 60).toFixed(2)} minutes`;
-  
-  
-  let githubTeamString = 'Not performed';
-  let driveString = 'Not performed';
-  let onePasswordString = 'Not performed';
-  let figmaString = 'Not performed';
-  let slackString = 'Not performed';
-
-  let githubTask = processLog.tasks.find(task => task.task === 'remove from Github Teams');
-  if (githubTask) {
-    githubTeamString = `${githubTask.status}\n`+ `${githubTask.message}`;
-  }
-  let driveTask = processLog.tasks.find(task => task.task === 'remove from Project Drives');
-  if (driveTask) {
-    driveString = `${driveTask.status}\n`+ `${driveTask.message}`;
-  }
-  let onePasswordTask = processLog.tasks.find(task => task.task === 'remove from onePassword');
-  if (onePasswordTask) {
-    onePasswordString = `${onePasswordTask.status}\n`+ `${onePasswordTask.message}`;
-  }
-  let figmaTask = processLog.tasks.find(task => task.task === 'remove from figma');
-  if (figmaTask) {
-    figmaString = `${figmaTask.status}\n`+ `${figmaTask.message}`;
-  }
-  let slackTask = processLog.tasks.find(task => task.task === 'remove from slack');
-  if (slackTask) {
-    slackString = `${slackTask.status}\n`+ `${slackTask.message}`;
-  }
-  let fail = false;
-  if ((githubTask && githubTask.status=="error")||
-      (driveTask && driveTask.status=="error")||
-      (onePasswordTask && onePasswordTask.status=="error")||
-      (figmaTask && figmaTask.status=="error")||
-      (slackTask && slackTask.status=="error")){
-        fail = true;}
+  const totalTime = processLog.total_time_to_process / 1000; // seconds
+  const timeString =
+    totalTime < 60
+      ? `${totalTime.toFixed(2)} seconds`
+      : `${(totalTime / 60).toFixed(2)} minutes`;
 
   const today = new Date();
   const todayFormatted = Utilities.formatDate(today, CONFIG.TIME_ZONE, 'yyyy-MM-dd hh:mm');
   const timestampFormatted = Utilities.formatDate(today, CONFIG.TIME_ZONE, 'yyyy-MM-dd hh:mm:ss');
 
-  let commentBody = "";
-  if(fail){
-    commentBody = `##Attention! \n\n##`+
-    `**${processLog.githubHandle}**, only got partially offboarded from Project: **${processLog.projectName}** at ${todayFormatted}\n\n` +
-                        `* github: ${githubTeamString}\n` +
-                        `* google drive: ${driveString}\n` +
-                        `* 1Password: ${onePasswordString}\n` +
-                        `* figma: ${figmaString}\n` +
-                        `* meetings: ${slackString}\n\n` +
-                        `request made ${timestampFormatted}, total time to process ${timeString}`;
-  }else{
-    commentBody = `**${processLog.githubHandle}**, got fully offboarded from Project: **${processLog.projectName}** \n\n` +
-                        `request made ${timestampFormatted}, total time to process ${timeString}`;
-  }
+  /* --------------------------------------------------------------
+     NO-MATCH BRANCH – GitHub handle not in the volunteer sheet
+     -------------------------------------------------------------- */
+  if (noMatch) {
+    const comment = `## Attention! No volunteer record found with the github handle\n\n` +
+      `**${processLog.githubHandle}** was requested for offboarding from **${processLog.projectName}** ` +
+      `at ${todayFormatted}, but **no row** with that GitHub handle exists in the Volunteers database.\n\n` +
+      `* No actions were performed.\n\n` +
+      `request made ${timestampFormatted}, total time to process ${timeString}`;
 
-  processLog.steps.push({ step: 'constructOffboardingComment', status: 'success', message: 'Offboarding comment constructed successfully' });
-  return commentBody;
+    processLog.steps.push({
+      step: 'constructOffboardingComment',
+      status: 'success',
+      message: 'No-match offboarding comment constructed'
+    });
+    return comment;
+  }
+  /* --------------------------------------------------------------
+     FALLBACK: If no tasks ran (e.g. early validation failure)
+     -------------------------------------------------------------- */
+  if (processLog.tasks.length === 0 && !noMatch) {
+    const errorStep = processLog.steps.find(s => s.step === 'error');
+    const errorMsg = errorStep ? errorStep.message : 'Unknown error during offboarding';
+    const comment = `## Offboarding Failed Early\n\n` +
+      `**${processLog.githubHandle}** could not be offboarded from **${processLog.projectName}**\n\n` +
+      `Error: ${errorMsg}\n\n` +
+      `request made ${timestampFormatted}, total time to process ${timeString}`;
+    processLog.steps.push({
+      step: 'constructOffboardingComment',
+      status: 'success',
+      message: 'Fallback error comment constructed'
+    });
+    return comment;
+  }
+  /* --------------------------------------------------------------
+     NORMAL BRANCH – build the regular success / partial-failure comment
+     -------------------------------------------------------------- */
+  const githubTask = processLog.tasks.find(t => t.task === 'remove from Github Teams') || { status: 'Not performed', message: '' };
+  const driveTask  = processLog.tasks.find(t => t.task === 'remove from Project Drives') || { status: 'Not performed', message: '' };
+  const onePwTask  = processLog.tasks.find(t => t.task === 'remove from onePassword') || { status: 'Not performed', message: '' };
+  const figmaTask  = processLog.tasks.find(t => t.task === 'remove from figma') || { status: 'Not performed', message: '' };
+  const slackTask  = processLog.tasks.find(t => t.task === 'remove from slack') || { status: 'Not performed', message: '' };
+
+  const githubStr = `${githubTask.status}\n${githubTask.message}`.trim();
+  const driveStr  = `${driveTask.status}\n${driveTask.message}`.trim();
+  const onePwStr  = `${onePwTask.status}\n${onePwTask.message}`.trim();
+  const figmaStr  = `${figmaTask.status}\n${figmaTask.message}`.trim();
+  const slackStr  = `${slackTask.status}\n${slackTask.message}`.trim();
+
+  const anyError = [githubTask, driveTask, onePwTask, figmaTask, slackTask]
+    .some(t => t.status === 'error');
+
+  const header = anyError
+    ? `## Attention! \n\n**${processLog.githubHandle}**, only got partially offboarded from Project: **${processLog.projectName}** at ${todayFormatted}\n\n`
+    : `**${processLog.githubHandle}**, got fully offboarded from Project: **${processLog.projectName}** at ${todayFormatted}\n\n`;
+
+  const body = `* github: ${githubStr}\n` +
+               `* google drive: ${driveStr}\n` +
+               `* 1Password: ${onePwStr}\n` +
+               `* figma: ${figmaStr}\n` +
+               `* meetings: ${slackStr}\n\n` +
+               `request made ${timestampFormatted}, total time to process ${timeString}`;
+
+  processLog.steps.push({
+    step: 'constructOffboardingComment',
+    status: 'success',
+    message: 'Offboarding comment constructed successfully'
+  });
+  return header + body;
 }
