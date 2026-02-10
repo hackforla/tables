@@ -73,7 +73,7 @@ Before setting up or running the workflow, ensure the following:
 ### 2. GitHub Repository Secrets
 - The secrets are stored in tables > Settings > Secrets and variables > Actions.
 - `CLASPRC_JSON`: The contents of your `~/.clasprc.json` file (Clasp credentials, including OAuth token). Generate this by running `clasp login` locally.
-- `REPO_ACCESS_TOKEN`: A GitHub REPO_ACCESS_TOKEN (PAT) with `repo` scope to update secrets programmatically.
+- `REPO_ACCESS_TOKEN`: A GitHub Personal Access Token (PAT) stored as REPO_ACCESS_TOKEN with `repo` scope to update secrets programmatically.
 
 ### 3. Repository Structure
 - `.github/workflows/deploy.yml`: Main deployment workflow.
@@ -83,6 +83,23 @@ Before setting up or running the workflow, ensure the following:
 
 ### 4. Permissions
 - The Google account used for `clasp login` must have edit access to the target Apps Script projects (currently `tables@hackforla.org`).
+
+## Technical Summary
+
+The system, built with GitHub Actions and bash scripting, uses a modular architecture:
+
+- **Core Workflows**: `deploy.yml` handles deployments; `update_clasp_token.yml` manages token maintenance.
+- **Triggers**: Event-based (push to `main`, manual dispatch) and scheduled (weekly cron).
+- **Integrations**: GitHub API (for secret updates via `gh`), Clasp (for GAS pushes), Node.js (runtime for Clasp).
+- **Configuration**: GitHub Secrets store credentials; environment variables enable dynamic token updates within workflows.
+
+### Script Overview
+
+| Workflow/Script | File | Purpose |
+|---|---|---|
+| Deploy Script | `.github/workflows/deploy.yml` | Deploys code on push or manual trigger; refreshes tokens and pushes selectively |
+| Weekly Clasp Token Update | `.github/workflows/update_clasp_token.yml` | Scheduled weekly token refresh and GitHub secret update |
+| Clasp Push Script | `.github/scripts/clasp_push.sh` | Detects changed files, finds projects via `.clasp.json`, and pushes only affected code |
 
 ## How It Works: Step-by-Step
 
@@ -132,23 +149,6 @@ update_clasp_token.yml
 ### 3. Manual Triggers
 
 Use the GitHub UI to dispatch either workflow for on-demand runs. Navigate to the **Actions** tab in the repository, select the desired workflow, and click **Run workflow**.
-
-## Technical Summary
-
-The system, built with GitHub Actions and bash scripting, uses a modular architecture:
-
-- **Core Workflows**: `deploy.yml` handles deployments; `update_clasp_token.yml` manages token maintenance.
-- **Triggers**: Event-based (push to `main`, manual dispatch) and scheduled (weekly cron).
-- **Integrations**: GitHub API (for secret updates via `gh`), Clasp (for GAS pushes), Node.js (runtime for Clasp).
-- **Configuration**: GitHub Secrets store credentials; environment variables enable dynamic token updates within workflows.
-
-### Script Overview
-
-| Workflow/Script | File | Purpose |
-|---|---|---|
-| Deploy Script | `.github/workflows/deploy.yml` | Deploys code on push or manual trigger; refreshes tokens and pushes selectively |
-| Weekly Clasp Token Update | `.github/workflows/update_clasp_token.yml` | Scheduled weekly token refresh and GitHub secret update |
-| Clasp Push Script | `.github/scripts/clasp_push.sh` | Detects changed files, finds projects via `.clasp.json`, and pushes only affected code |
 
 ## Workflows
 
