@@ -1,39 +1,179 @@
-# Tables
+<a name="readme-top"></a>
 
-This project aims to automate volunteer onboarding for Hack for LA’s platforms, reducing the burden on the Executive Director.
+<div align="center">
+  <img alt="Hack for LA Logo" src="https://www.hackforla.org/assets/images/logos/hack-for-la-logo.svg" width="200px">
 
-### Project context
+  <h1>Tables — Volunteer Onboarding & Offboarding Automation</h1>
 
-Due to the nature of this project, the code is not hosted publicly on GitHub unlike most of Hack for LA’s projects. In order to have a better understanding of this project and how you can contribute please reach out in the #tables slack channel or express your interest in this project to Bonnie Wolfe.
+  <p>
+    The production automation system that keeps Hack for LA running
+  </p>
 
-### Technology used
+[![Contributors][contributors-shield]][contributors-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 
-- Google Tables
-- Google Drive
-- Google App Scripts
-- Goolge API
-- GitHub API
+</div>
+
+---
+
+## What is Tables?
+
+Hack for LA runs on volunteers — over **200 active contributors** across **30+ open source civic tech projects**. Every one of them needs access to the right tools, teams, and resources before they can contribute. And when they leave, all of that access needs to be cleanly and securely revoked.
+
+**Tables is the system that makes that happen automatically.**
+
+A volunteer submits a form. Tables handles everything from there — no manual steps, no missed permissions, no security gaps. Every action is logged and traceable. The whole process runs at zero infrastructure cost, entirely within the Google ecosystem.
+
+Tables currently serves as Hack for LA's **operational continuity layer** — the production system managing human capital automation while two longer-running infrastructure projects ([VRMS](https://github.com/hackforla/VRMS) and [PeopleDepot](https://github.com/hackforla/peopledepot)) continue development.
+
+---
+
+## Impact
+
+- **200+ volunteers** onboarded and managed across the org
+- **30+ active projects** with automated access provisioning
+- **5 integrated platforms** managed from a single workflow
+- **Zero infrastructure cost** — fully serverless on Google's free tier
+- **Full audit trail** on every automation run, success or failure
+- Serves as the **reference implementation** for permission logic and data schema that VRMS and PeopleDepot will inherit
+
+---
+
+## Technology Stack
+
+<div align="center">
+
+[![Google Apps Script][gas-shield]][gas-url]
+[![Google Sheets][sheets-shield]][sheets-url]
+[![GitHub Actions][github-actions-shield]][github-actions-url]
+[![JavaScript][js-shield]][js-url]
+[![Clasp][clasp-shield]][clasp-url]
+[![Docker][docker-shield]][docker-url]
+
+</div>
+
+| Layer | Technology |
+|---|---|
+| Runtime | Google Apps Script (serverless) |
+| Database | Google Sheets |
+| Frontend Input | Google Forms |
+| Deployment | Clasp + GitHub Actions CI/CD |
+| Secrets Management | 1Password + GAS Script Properties |
+| API Integrations | GitHub, Google Drive, 1Password, Zoom, Slack |
+| Containerization | Docker (1Password CLI API service) |
+
+### Why This Stack?
+
+Most automation systems at this scale run on paid platforms with real ops costs. Tables achieves the same outcome **entirely within the Google ecosystem at zero cost** — a deliberate architectural decision that keeps the system sustainable for a volunteer organization.
+
+That constraint is also what makes this project technically interesting. Building reliable, maintainable production systems under those constraints requires genuine engineering discipline — and that's exactly where this project has invested its energy.
+
+---
+
+## Project Context: Where Tables Fits
+
+```
+┌──────────────────────────────────────────────────────┐
+│               Hack for LA Ecosystem                  │
+│                                                      │
+│  VRMS          ← volunteer-facing platform (in dev)  │
+│  PeopleDepot   ← central data store / API (in dev)   │
+│                                                      │
+│  Tables        ← production automation TODAY         │
+│  (this repo)     bridging the gap while they build   │
+└──────────────────────────────────────────────────────┘
+```
+
+VRMS has been in development since 2019. PeopleDepot since 2021. In that time, Hack for LA has continuously onboarded hundreds of volunteers — Tables is what's made that possible. When those systems reach production, Tables' permission model, data schema, and automation logic will directly inform their architecture.
+
+Work you do here has a longer reach than the project itself.
+
+---
+
+## What You'll Work On
+
+This is not a project where you fix typos and update dependencies. Tables is in active system design — we're continuously architecting, refining, and hardening both the automation logic and the engineering infrastructure that supports it. If you want hands-on experience making real technical decisions on a live production system, this is the place.
+
+**Active**
+- **General onboarding automation** — expanding and maintaining the monthly org-wide onboarding pipeline that processes every new Hack for LA volunteer, verifies attendance, and provisions access across the full platform stack. This is the highest-traffic automation in the system and the one most volunteers experience directly
+- **1Password CLI API** — greenfield system design, build, and deployment of our own internal API around the 1Password CLI, enabling programmatic vault and team management as part of the onboarding and offboarding pipelines. Architecture decisions, API design, containerized deployment to the HFLA incubator environment, and long-term maintenance are all owned by this team
+- **CI/CD pipeline redesign** — architecting a proper staging → production promotion workflow with automated gates. Decisions include environment isolation strategy, test integration points, and deployment behavior
+- **Test infrastructure design** — designing our testing approach from the ground up: selecting the right framework for Apps Script constraints, defining the unit vs. integration test boundary, and wiring enforcement into the developer workflow so tests run before code reaches a PR
+- **Developer workflow standardization** — defining the contribution workflow for a rotating volunteer team: pre-push hooks, branch conventions, review standards, and the tooling that makes it safe for new engineers to ship without breaking production
+- **Schema and data integrity hardening** — redesigning how the system interfaces with its data layer to eliminate silent failure modes and make the codebase resilient to configuration drift
 
 
+**Upcoming**
+- Expanding automation coverage across additional platforms
+- Data export pipeline to feed PeopleDepot at launch
+- Operational health monitoring and alerting
 
-# How to contribute
+Every issue you close here has a direct impact on real volunteers — people who join HFLA expecting their access to just work.
 
-- You will need to have attended a Hack for LA onboarding meeting and have been approved to join the team by Bonnie Wolfe.
-- After being approved, join the team slack channel at [#tables](https://app.slack.com/client/T04502KQX/C02LPQXUWJ0).
-- For Developers
-   - please see the [CONTRIBUTING.md](/dev-docs/CONTRIBUTING.md)
-   - All the rest of our documentation is in the [dev-docs](https://github.com/hackforla/tables/tree/main/dev-docs) folder on this repo
-   - We store any documents, presentations, etc. in the [Tables Google Drive](https://drive.google.com/drive/folders/0AO5HWG9daZAtUk9PVA) 
+---
 
-## See all issues by platform
-- GitHub
-- Google Drive
-- Google Calendar
-- Slack
-- 1Password
-- Figma
-- Google Sites
-- Zoom
-- Meetup
+## Contributing
 
-*this readme file sourced from [Jessica Sand](http://jessicasand.com/other-stuff/just-enough-docs/)*
+### Prerequisites
+- JavaScript experience
+- Basic familiarity with REST APIs
+- A Google account
+- Docker (required for 1Password CLI API work — used for containerized deployment to the HFLA incubator environment)
+
+Most work requires no special local setup beyond a Google account. Docker is only needed if you're working on the 1Password API service.
+
+### Getting Started
+
+1. **Join Hack for LA** — attend a [free onboarding event](https://www.hackforla.org/getting-started) to get org access
+2. **Connect with the team** — reach out in [#tables](https://app.slack.com/client/T04502KQX/C02LPQXUWJ0) on Slack
+3. **Read the dev docs** — start with [`dev-docs/app-scripts.md`](dev-docs/app-scripts.md) and [`dev-docs/tables.md`](dev-docs/tables.md)
+4. **Pick an issue** — look for `good first issue` labels or ask the team what's most needed
+
+### Why Contribute Here
+
+Tables is a small team with real ownership. Engineers here make architectural decisions, not just close tickets. The system is in production, the problems are unsolved, and the work you ship matters to the org immediately.
+
+---
+
+## Wiki & Docs
+
+- [Dev Docs](dev-docs/) — technical documentation for contributors
+- [Decision Records](dev-docs/Decision-Records.md) — architectural decisions and rationale
+- [Security](dev-docs/security.md) — security practices and secrets management
+- [App Scripts Guide](dev-docs/app-scripts.md) — how the automation scripts work
+- [Contributing Guide](dev-docs/CONTRIBUTING.md) — how to get set up
+
+---
+
+## License
+
+[MIT License](LICENSE)
+
+---
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- SHIELDS -->
+[commit-activity-shield]: https://img.shields.io/github/commit-activity/m/hackforla/tables?style=for-the-badge
+[commit-activity-url]: https://github.com/hackforla/tables/commits/main/
+[contributors-shield]: https://img.shields.io/github/contributors/hackforla/tables.svg?style=for-the-badge
+[contributors-url]: https://github.com/hackforla/tables/graphs/contributors
+[issues-shield]: https://img.shields.io/github/issues/hackforla/tables.svg?style=for-the-badge
+[issues-url]: https://github.com/hackforla/tables/issues
+[license-shield]: https://img.shields.io/github/license/hackforla/tables.svg?style=for-the-badge
+[license-url]: https://github.com/hackforla/tables/blob/main/LICENSE
+
+<!-- TECH SHIELDS -->
+[gas-shield]: https://img.shields.io/badge/Google%20Apps%20Script-4285F4?style=for-the-badge&logo=google&logoColor=white
+[gas-url]: https://developers.google.com/apps-script
+[sheets-shield]: https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=google-sheets&logoColor=white
+[sheets-url]: https://www.google.com/sheets/about/
+[github-actions-shield]: https://img.shields.io/badge/GitHub%20Actions-2671E5?style=for-the-badge&logo=githubactions&logoColor=white
+[github-actions-url]: https://docs.github.com/en/actions
+[js-shield]: https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black
+[js-url]: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+[clasp-shield]: https://img.shields.io/badge/Clasp-CLI-brightgreen?style=for-the-badge
+[clasp-url]: https://github.com/google/clasp
+[docker-shield]: https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white
+[docker-url]: https://www.docker.com/
