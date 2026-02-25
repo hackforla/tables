@@ -1,7 +1,7 @@
 <a name="readme-top"></a>
 
 <div align="center">
-  <img alt="Hack for LA Logo" src="https://www.hackforla.org/assets/images/logos/hack-for-la-logo.svg" width="200px">
+  <img alt="Hack for LA Logo" src="assets/images/hfla-logo.png" width="200px">
 
   <h1>Tables — Volunteer Onboarding & Offboarding Automation</h1>
 
@@ -118,8 +118,6 @@ Every issue you close here has a direct impact on real volunteers — people who
 ### Prerequisites
 - JavaScript experience
 - Basic familiarity with REST APIs
-- A Google account
-- Docker (required for 1Password CLI API work — used for containerized deployment to the HFLA incubator environment)
 
 Most work requires no special local setup beyond a Google account. Docker is only needed if you're working on the 1Password API service.
 
