@@ -1,7 +1,7 @@
 <a name="readme-top"></a>
 
 <div align="center">
-  <img alt="Hack for LA Logo" src="assets/images/hfla-logo.png" width="200px">
+  <img alt="Hack for LA Logo" src="assets/images/hflalogo_white.png" width="200px">
 
   <h1>Tables — Volunteer Onboarding & Offboarding Automation</h1>
 
@@ -9,9 +9,6 @@
     The production automation system that keeps Hack for LA running
   </p>
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
 
 </div>
 
