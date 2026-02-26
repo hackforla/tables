@@ -106,7 +106,7 @@ This is not a project where you fix typos and update dependencies. Tables is in 
 - Data export pipeline to feed PeopleDepot at launch
 - Operational health monitoring and alerting
 
-Every issue you close here has a direct impact on real volunteers — people who join HFLA expecting their access to just work.
+The stakeholders are Hack for LA's volunteers, people who join HFLA needing access to contribute.  When we reduce friction around access, we improve the volunteer experience and remove barries to productivity.
 
 ---
 
