@@ -18,6 +18,8 @@
 
 Hack for LA runs on volunteers — over **200 active contributors** across **30+ open source civic tech projects**. Every one of them needs access to the right tools, teams, and resources before they can contribute. And when they leave, all of that access needs to be cleanly and securely revoked.
 
+All automation created by the Tables team reduces the administrative burden on several volunteer roles:  Executive Director, Onboarding Leads, Community of Practice Leads, Product/Project Managers.
+
 **Tables is the system that makes that happen automatically.**
 
 A volunteer submits a form. Tables handles everything from there — no manual steps, no missed permissions, no security gaps. Every action is logged and traceable. The whole process runs at zero infrastructure cost, entirely within the Google ecosystem.
