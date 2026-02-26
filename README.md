@@ -20,22 +20,20 @@ Hack for LA runs on volunteers — over **200 active contributors** across **30+
 
 All automation created by the Tables team reduces the administrative burden on several volunteer roles:  Executive Director, Onboarding Leads, Community of Practice Leads, Product/Project Managers.
 
-**Tables is the system that makes that happen automatically.**
+Tables is the system that makes that happen automatically. When A volunteer submits a form, it is processed by Tables automations. Reduced manual steps, accurate permissions, minimized or controlled security gaps. All actions are logged and traceable.
 
-When A volunteer submits a form, it is processed by Tables automations. Reduced manual steps, accurate permissions, minimized or controlled security gaps. All actions are logged and traceable.
-
-Tables currently serves as Hack for LA's **operational continuity layer** — the production system managing human capital automation while two longer-running infrastructure projects ([VRMS](https://github.com/hackforla/VRMS) and [PeopleDepot](https://github.com/hackforla/peopledepot)) continue development.
+Tables currently serves as Hack for LA's operational continuity layer — the production system managing human capital automation while two longer-running infrastructure projects ([VRMS](https://github.com/hackforla/VRMS) and [PeopleDepot](https://github.com/hackforla/peopledepot)) continue development.
 
 ---
 
 ## Impact
 
-- **2000+ volunteers** onboarded and managed across the org
-- **30+ active projects** with automated access provisioning
-- **5 integrated platforms** managed from a single workflow
-- **Zero infrastructure cost** — fully serverless on Google's free tier
-- **Full audit trail** on every automation run, success or failure
-- Serves as the **reference implementation** for permission logic and data schema that VRMS and PeopleDepot will inherit
+- 2000+ volunteers onboarded and managed across the org
+- 30+ active projects with automated access provisioning
+- 5 integrated platforms managed from a single workflow
+- Zero infrastructure cost — fully serverless on Google's free tier
+- Full audit trail on every automation run, success or failure
+- Serves as the reference implementation for permission logic and data schema that VRMS and PeopleDepot will inherit
 
 ---
 
@@ -63,7 +61,7 @@ Tables currently serves as Hack for LA's **operational continuity layer** — th
 
 ### Why This Stack?
 
-Tables runs entirely within the Google ecosystem at zero cost, which a deliberate architectural decision that keeps the system sustainable for a volunteer organization.
+Tables runs entirely within the Google ecosystem at zero cost, which is a deliberate architectural decision that keeps the system sustainable for a volunteer organization.
 
 Building these reliable, maintainable services with cost constraints increases the need for creativity and engineering discipline.  
 
@@ -105,7 +103,7 @@ Tables is in active development. Current work spans automation logic, infrastruc
 - Data export pipeline to feed PeopleDepot at launch
 - Operational health monitoring and alerting
 
-The stakeholders are Hack for LA's volunteers, people who join HFLA needing access to contribute.  When we reduce friction around access, we improve the volunteer experience and remove barries to productivity.
+The stakeholders are Hack for LA's volunteers, people who join HFLA needing access to contribute.  When we reduce friction around access, we improve the volunteer experience and remove barriers to productivity.
 
 ---
 
