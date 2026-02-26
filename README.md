@@ -22,7 +22,7 @@ All automation created by the Tables team reduces the administrative burden on s
 
 **Tables is the system that makes that happen automatically.**
 
-A volunteer submits a form. Tables handles everything from there — no manual steps, no missed permissions, no security gaps. Every action is logged and traceable. The whole process runs at zero infrastructure cost, entirely within the Google ecosystem.
+When A volunteer submits a form, it is processed by Tables automations. Reduced manual steps, accurate permissions, minimized or controlled security gaps. All actions are logged and traceable.
 
 Tables currently serves as Hack for LA's **operational continuity layer** — the production system managing human capital automation while two longer-running infrastructure projects ([VRMS](https://github.com/hackforla/VRMS) and [PeopleDepot](https://github.com/hackforla/peopledepot)) continue development.
 
