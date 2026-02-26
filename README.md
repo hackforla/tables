@@ -127,7 +127,7 @@ Most work requires no special local setup beyond a Google account. Docker is onl
 
 ### Why Contribute Here
 
-Tables is a small team with real ownership. Engineers here make architectural decisions, not just close tickets. The system is in production, the problems are unsolved, and the work you ship matters to the org immediately.
+Tables is a small team with ownership. Engineers here make architectural decisions. The system is in production, the problems are unsolved, and the work you ship matters to the org immediately.
 
 ---
 
