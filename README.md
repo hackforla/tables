@@ -30,7 +30,7 @@ Tables currently serves as Hack for LA's **operational continuity layer** — th
 
 ## Impact
 
-- **200+ volunteers** onboarded and managed across the org
+- **2000+ volunteers** onboarded and managed across the org
 - **30+ active projects** with automated access provisioning
 - **5 integrated platforms** managed from a single workflow
 - **Zero infrastructure cost** — fully serverless on Google's free tier
