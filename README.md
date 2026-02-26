@@ -64,7 +64,7 @@ Tables currently serves as Hack for LA's **operational continuity layer** — th
 
 Most automation systems at this scale run on paid platforms with real ops costs. Tables achieves the same outcome **entirely within the Google ecosystem at zero cost** — a deliberate architectural decision that keeps the system sustainable for a volunteer organization.
 
-That constraint is also what makes this project technically interesting. Building reliable, maintainable production systems under those constraints requires genuine engineering discipline — and that's exactly where this project has invested its energy.
+Building these reliable, maintainable services with cost constraints increases the need for creativity and engineering discipline.  
 
 ---
 
