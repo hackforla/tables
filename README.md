@@ -90,7 +90,7 @@ Work you do here has a longer reach than the project itself.
 
 ## What You'll Work On
 
-This is not a project where you fix typos and update dependencies. Tables is in active system design — we're continuously architecting, refining, and hardening both the automation logic and the engineering infrastructure that supports it. If you want hands-on experience making real technical decisions on a live production system, this is the place.
+This is not a project where you fix typos and update dependencies. Tables is in active system design - we're continuously architecting, refining, and hardening both the automation logic and the engineering infrastructure that supports it. This project provides hands-on experience making technical decisions on a live production system.
 
 **Active**
 - **General onboarding automation** — expanding and maintaining the monthly org-wide onboarding pipeline that processes every new Hack for LA volunteer, verifies attendance, and provisions access across the full platform stack. This is the highest-traffic automation in the system and the one most volunteers experience directly
