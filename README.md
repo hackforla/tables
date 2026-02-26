@@ -16,11 +16,13 @@
 
 ## What is Tables?
 
-Hack for LA runs on volunteers — over **200 active contributors** across **30+ open source civic tech projects**. Every one of them needs access to the right tools, teams, and resources before they can contribute. And when they leave, all of that access needs to be cleanly and securely revoked.
+Hack for LA runs on volunteers — over **200 active contributors** across **30+ open source civic tech projects**. Every one of them needs access to the right tools, teams, and resources before they can contribute. When they leave, that access needs to be cleanly revoked.
+
+All automation created by the Tables team reduces the administrative burden on several volunteer roles:  Executive Director, Onboarding Leads, Community of Practice Leads, Product/Project Managers.
 
 **Tables is the system that makes that happen automatically.**
 
-A volunteer submits a form. Tables handles everything from there — no manual steps, no missed permissions, no security gaps. Every action is logged and traceable. The whole process runs at zero infrastructure cost, entirely within the Google ecosystem.
+When A volunteer submits a form, it is processed by Tables automations. Reduced manual steps, accurate permissions, minimized or controlled security gaps. All actions are logged and traceable.
 
 Tables currently serves as Hack for LA's **operational continuity layer** — the production system managing human capital automation while two longer-running infrastructure projects ([VRMS](https://github.com/hackforla/VRMS) and [PeopleDepot](https://github.com/hackforla/peopledepot)) continue development.
 
@@ -28,7 +30,7 @@ Tables currently serves as Hack for LA's **operational continuity layer** — th
 
 ## Impact
 
-- **200+ volunteers** onboarded and managed across the org
+- **2000+ volunteers** onboarded and managed across the org
 - **30+ active projects** with automated access provisioning
 - **5 integrated platforms** managed from a single workflow
 - **Zero infrastructure cost** — fully serverless on Google's free tier
@@ -56,15 +58,14 @@ Tables currently serves as Hack for LA's **operational continuity layer** — th
 | Database | Google Sheets |
 | Frontend Input | Google Forms |
 | Deployment | Clasp + GitHub Actions CI/CD |
-| Secrets Management | 1Password + GAS Script Properties |
 | API Integrations | GitHub, Google Drive, 1Password, Zoom, Slack |
 | Containerization | Docker (1Password CLI API service) |
 
 ### Why This Stack?
 
-Most automation systems at this scale run on paid platforms with real ops costs. Tables achieves the same outcome **entirely within the Google ecosystem at zero cost** — a deliberate architectural decision that keeps the system sustainable for a volunteer organization.
+Tables runs entirely within the Google ecosystem at zero cost, which a deliberate architectural decision that keeps the system sustainable for a volunteer organization.
 
-That constraint is also what makes this project technically interesting. Building reliable, maintainable production systems under those constraints requires genuine engineering discipline — and that's exactly where this project has invested its energy.
+Building these reliable, maintainable services with cost constraints increases the need for creativity and engineering discipline.  
 
 ---
 
@@ -82,21 +83,19 @@ That constraint is also what makes this project technically interesting. Buildin
 └──────────────────────────────────────────────────────┘
 ```
 
-VRMS has been in development since 2019. PeopleDepot since 2021. In that time, Hack for LA has continuously onboarded hundreds of volunteers — Tables is what's made that possible. When those systems reach production, Tables' permission model, data schema, and automation logic will directly inform their architecture.
-
-Work you do here has a longer reach than the project itself.
+VRMS has been in development since 2019. PeopleDepot since 2021. In that time, Hack for LA has continuously onboarded thousands of volunteers. When those systems reach production, Tables' permission model, data schema, and automation logic will directly inform their architecture.
 
 ---
 
 ## What You'll Work On
 
-This is not a project where you fix typos and update dependencies. Tables is in active system design — we're continuously architecting, refining, and hardening both the automation logic and the engineering infrastructure that supports it. If you want hands-on experience making real technical decisions on a live production system, this is the place.
+Tables is in active development. Current work spans automation logic, infrastructure, and engineering process. This project provides hands-on experience making technical decisions on a live production system.
 
 **Active**
-- **General onboarding automation** — expanding and maintaining the monthly org-wide onboarding pipeline that processes every new Hack for LA volunteer, verifies attendance, and provisions access across the full platform stack. This is the highest-traffic automation in the system and the one most volunteers experience directly
-- **1Password CLI API** — greenfield system design, build, and deployment of our own internal API around the 1Password CLI, enabling programmatic vault and team management as part of the onboarding and offboarding pipelines. Architecture decisions, API design, containerized deployment to the HFLA incubator environment, and long-term maintenance are all owned by this team
-- **CI/CD pipeline redesign** — architecting a proper staging → production promotion workflow with automated gates. Decisions include environment isolation strategy, test integration points, and deployment behavior
-- **Test infrastructure design** — designing our testing approach from the ground up: selecting the right framework for Apps Script constraints, defining the unit vs. integration test boundary, and wiring enforcement into the developer workflow so tests run before code reaches a PR
+- **General onboarding automation** — the monthly org-wide pipeline that processes every new HFLA volunteer, verifies attendance, and provisions access across the platform stack. Highest-traffic automation in the system
+- **1Password CLI API** —  an internal REST API wrapping the 1Password CLI, used by the onboarding and offboarding pipelines for vault and team management.
+- **CI/CD pipeline redesign** — building a proper staging → production promotion workflow with automated gates and environment isolation
+- **Test infrastructure design** —  defining the unit vs. integration test boundary for Apps Script constraints and wiring tests into the PR workflow
 - **Developer workflow standardization** — defining the contribution workflow for a rotating volunteer team: pre-push hooks, branch conventions, review standards, and the tooling that makes it safe for new engineers to ship without breaking production
 - **Schema and data integrity hardening** — redesigning how the system interfaces with its data layer to eliminate silent failure modes and make the codebase resilient to configuration drift
 
@@ -106,7 +105,7 @@ This is not a project where you fix typos and update dependencies. Tables is in 
 - Data export pipeline to feed PeopleDepot at launch
 - Operational health monitoring and alerting
 
-Every issue you close here has a direct impact on real volunteers — people who join HFLA expecting their access to just work.
+The stakeholders are Hack for LA's volunteers, people who join HFLA needing access to contribute.  When we reduce friction around access, we improve the volunteer experience and remove barries to productivity.
 
 ---
 
@@ -116,7 +115,7 @@ Every issue you close here has a direct impact on real volunteers — people who
 - JavaScript experience
 - Basic familiarity with REST APIs
 
-Most work requires no special local setup beyond a Google account. Docker is only needed if you're working on the 1Password API service.
+Docker is needed only if you're working on the 1Password API service.
 
 ### Getting Started
 
@@ -127,7 +126,7 @@ Most work requires no special local setup beyond a Google account. Docker is onl
 
 ### Why Contribute Here
 
-Tables is a small team with real ownership. Engineers here make architectural decisions, not just close tickets. The system is in production, the problems are unsolved, and the work you ship matters to the org immediately.
+Tables is a small team with ownership. Engineers here make architectural decisions. The system is in production, the work you ship matters to the org immediately.
 
 ---
 
